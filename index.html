@@ -3,104 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>PizTok 99%</title>
+<title>PizTok V99 ULTRA</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,sans-serif;overflow:hidden}
+*{margin:0;padding:0;box-sizing:border-box}body{background:#000;color:#fff;font-family:-apple-system,sans-serif;overflow:hidden}
 .snap{scroll-snap-type:y mandatory;height:100vh;overflow-y:scroll}.snap::-webkit-scrollbar{display:none}
-.item{scroll-snap-align:start;height:100vh;width:100vw;position:relative;background:#000;display:flex;justify-content:center}
+.item{scroll-snap-align:start;height:100vh;width:100vw;position:relative;background:#000;display:flex;justify-content:center;overflow:hidden}
 .item video{height:100%;width:100%;max-width:420px;object-fit:cover}
-.right{position:absolute;right:8px;bottom:90px;display:flex;flex-direction:column;gap:18px;align-items:center;z-index:10}
-.btn{width:48px;height:48px;background:rgba(255,255,255,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;backdrop-filter:blur(10px)}
-.info{position:absolute;bottom:85px;left:12px;right:70px;z-index:10}
-.music{animation:marq 8s linear infinite;white-space:nowrap}
-@keyframes marq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.right{position:absolute;right:8px;bottom:95px;display:flex;flex-direction:column;gap:16px;align-items:center;z-index:10}
+.btn{width:48px;height:48px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;backdrop-filter:blur(10px)}
+.info{position:absolute;bottom:90px;left:12px;right:70px;z-index:10}
+.wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-20deg);font-size:22px;font-weight:900;color:rgba(255,255,255,0.18);pointer-events:none;z-index:5;letter-spacing:2px}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid #222;display:flex;justify-content:space-around;padding:6px 0;z-index:30}
-.top{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;justify-content:center;gap:20px;padding:12px;background:linear-gradient(to bottom,rgba(0,0,0,0.8),transparent)}
+.top{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;justify-content:center;gap:20px;padding:12px;background:linear-gradient(to bottom,rgba(0,0,0,0.9),transparent)}
+.heartAnim{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:80px;color:#FE2C55;animation:pop 0.9s ease;pointer-events:none;z-index:20}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(0)}20%{transform:translate(-50%,-50%) scale(1.2)}80%{transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-50%) scale(0);opacity:0}}
 </style>
 </head>
 <body>
 
 <div class="top">
-<button id="bFor" onclick="setTab('foryou')" class="font-bold text-[16px] border-b-2 border-white pb-1">For You</button>
-<button id="bFol" onclick="setTab('following')" class="font-bold text-[16px] text-zinc-400">Following</button>
+<button id="bFor" onclick="setTab('foryou')" class="font-bold border-b-2 border-white pb-1">For You</button>
+<button id="bFol" onclick="setTab('following')" class="font-bold text-zinc-400">Following</button>
+<button onclick="showPage('search')" class="ml-auto"><i class="fa-solid fa-magnifying-glass"></i></button>
 </div>
 
 <div id="feed" class="snap"></div>
 
-<!-- PROFILE PAGE 99% -->
+<!-- SEARCH PAGE -->
+<div id="searchPage" class="hidden fixed inset-0 bg-black z-20 pt-14 px-4">
+<div class="flex gap-2"><input id="sInput" oninput="doSearch()" placeholder="Search users, sounds, hashtags..." class="flex-1 bg-zinc-900 rounded-full px-4 py-2 text-white"><span onclick="showFeed()" class="py-2">Cancel</span></div>
+<div id="sResult" class="mt-4 text-zinc-400">Type to search...</div>
+</div>
+
+<!-- INBOX PAGE -->
+<div id="inboxPage" class="hidden fixed inset-0 bg-white text-black z-20 pt-12">
+<div class="flex justify-between px-4 py-2 border-b"><h2 class="font-bold">Inbox</h2><span onclick="showFeed()">✕</span></div>
+<div id="notifList" class="p-4"></div>
+</div>
+
+<!-- PROFILE -->
 <div id="proPage" class="hidden fixed inset-0 bg-white text-black overflow-y-scroll z-20">
-<div class="bg-white pt-12 pb-3 px-4">
+<div class="pt-12 px-4">
 <div class="flex justify-between"><i class="fa-solid fa-arrow-left" onclick="showFeed()"></i><i class="fa-solid fa-ellipsis"></i></div>
-<div class="flex flex-col items-center mt-2">
-<img src="https://i.pravatar.cc/100?u=you" class="w-24 h-24 rounded-full border-2">
-<h2 class="font-bold text-[18px] mt-2">@you</h2>
-<div class="flex gap-6 mt-3 text-center">
-<div><b id="vCount">0</b><br><span class="text-zinc-500 text-sm">Following</span></div>
-<div><b>1.2K</b><br><span class="text-zinc-500 text-sm">Followers</span></div>
-<div><b id="lCount">0</b><br><span class="text-zinc-500 text-sm">Likes</span></div>
+<div class="flex flex-col items-center">
+<img src="https://i.pravatar.cc/100?u=you" class="w-24 h-24 rounded-full">
+<h2 class="font-bold mt-2">@you</h2>
+<div class="flex gap-6 mt-3 text-center"><div><b id="vCount">0</b><br><span class="text-zinc-500 text-sm">Following</span></div><div><b>1.2K</b><br><span class="text-zinc-500 text-sm">Followers</span></div><div><b id="lCount">0</b><br><span class="text-zinc-500 text-sm">Likes</span></div></div>
+<p class="text-sm mt-3">PizTok V99 ULTRA 🚀 All 8 features!</p>
 </div>
-<div class="flex gap-2 mt-4 w-full"><button class="flex-1 bg-zinc-100 py-2 rounded font-bold">Edit profile</button><button class="flex-1 bg-zinc-100 py-2 rounded font-bold">Share profile</button></div>
-<p class="text-sm mt-3 text-center">Wisdom PizTok Creator 🚀 | 99% TikTok clone</p>
-</div>
-<div class="flex justify-around border-t mt-4 py-2 text-zinc-400"><i class="fa-solid fa-table-cells text-black"></i><i class="fa-regular fa-heart"></i><i class="fa-solid fa-lock"></i></div>
-<div id="grid" class="grid grid-cols-3 gap-[1px] bg-zinc-200"></div>
+<div id="grid" class="grid grid-cols-3 gap-[1px] bg-zinc-200 mt-4"></div>
 </div>
 </div>
 
-<!-- COMMENTS -->
-<div id="comm" class="hidden fixed bottom-0 left-0 right-0 bg-white text-black rounded-t-[12px] h-[60vh] z-40 p-4 overflow-y-scroll"><div class="flex justify-between mb-3"><b>Comments</b><span onclick="document.getElementById('comm').classList.add('hidden')">✕</span></div><div id="commList"></div></div>
-
-<div class="nav text-white">
-<button onclick="showFeed()" class="flex flex-col items-center"><i class="fa-solid fa-house text-[20px]"></i><span class="text-[9px] mt-1">Home</span></button>
-<button class="flex flex-col items-center opacity-60"><i class="fa-solid fa-user-group text-[20px]"></i><span class="text-[9px] mt-1">Friends</span></button>
-<button onclick="document.getElementById('up').click()" class="flex flex-col items-center"><div class="bg-white text-black px-4 py-1 rounded-[6px] border-2 border-black relative"><div class="absolute -left-1 top-0 bottom-0 w-2 bg-[#25F4EE] rounded-l"></div><div class="absolute -right-1 top-0 bottom-0 w-2 bg-[#FE2C55] rounded-r"></div><i class="fa-solid fa-plus"></i></div></button>
-<button class="flex flex-col items-center opacity-60"><i class="fa-solid fa-inbox text-[20px]"></i><span class="text-[9px] mt-1">Inbox</span></button>
-<button onclick="showProfile()" class="flex flex-col items-center"><i class="fa-regular fa-user text-[20px]"></i><span class="text-[9px] mt-1">Profile</span></button>
+<div class="nav">
+<button onclick="showFeed()" class="flex flex-col items-center"><i class="fa-solid fa-house text-[20px]"></i><span class="text-[9px]">Home</span></button>
+<button onclick="showPage('search')" class="flex flex-col items-center opacity-60"><i class="fa-solid fa-magnifying-glass text-[20px]"></i><span class="text-[9px]">Discover</span></button>
+<button onclick="triggerUpload()" class="flex flex-col items-center"><div class="bg-white text-black px-4 py-1 rounded-[6px] border"><i class="fa-solid fa-plus"></i></div></button>
+<button onclick="showPage('inbox')" class="flex flex-col items-center opacity-60 relative"><i class="fa-solid fa-inbox text-[20px]"></i><span id="notifDot" class="hidden absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span><span class="text-[9px]">Inbox</span></button>
+<button onclick="showPage('profile')" class="flex flex-col items-center"><i class="fa-regular fa-user text-[20px]"></i><span class="text-[9px]">Profile</span></button>
 </div>
 
 <input type="file" id="up" accept="video/*" hidden>
+<audio id="soundPlayer" hidden></audio>
 
 <script>
-let DB=JSON.parse(localStorage.getItem('piz99')||'{"videos":[{"id":1,"url":"https://www.w3schools.com/html/mov_bbb.mp4","owner":"piztok_official","caption":"Welcome to PizTok 99% 🔥 This is how TikTok looks! #fyp #viral","likes":3421,"liked":false,"followed":false,"comments":["🔥🔥","99% real!"]}]}');
+let DB=JSON.parse(localStorage.getItem('piz99ultra')||'{"videos":[{"id":1,"url":"https://www.w3schools.com/html/mov_bbb.mp4","owner":"piztok_official","caption":"V99 ULTRA is here 🔥 All 8 features added! #fyp","likes":3421,"liked":false,"followed":false,"sound":"Original sound - PizTok 99%"}],"notifs":[]}');
 let tab='foryou';
-function save(){localStorage.setItem('piz99',JSON.stringify(DB));}
-document.getElementById('up').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let u=URL.createObjectURL(f);DB.videos.unshift({id:Date.now(),url:u,owner:'you',caption:'My new 99% PizTok video 🚀 #piztok #99percent',likes:0,liked:false,followed:false,comments:[]});save();render();});
+function save(){localStorage.setItem('piz99ultra',JSON.stringify(DB));}
+function triggerUpload(){
+ let cap=prompt("✍️ Enter caption for your video:","My PizTok V99 video 🚀 #piztok");
+ if(cap===null)return;
+ document.getElementById('up').dataset.cap=cap;
+ document.getElementById('up').click();
+}
+document.getElementById('up').addEventListener('change',e=>{
+ let f=e.target.files[0]; if(!f)return;
+ let cap=e.target.dataset.cap||'My video #piztok';
+ let u=URL.createObjectURL(f);
+ DB.videos.unshift({id:Date.now(),url:u,owner:'you',caption:cap,likes:0,liked:false,followed:false,sound:"Original sound - you"});
+ DB.notifs.unshift({text:`You uploaded: "${cap.slice(0,30)}..."`,time:"now"});
+ save(); render(); alert('Uploaded with caption: '+cap);
+});
 
 function render(){
  let feed=document.getElementById('feed');
  let list=tab==='following'?DB.videos.filter(v=>v.followed):DB.videos;
  feed.innerHTML=list.map(v=>`
- <div class="item">
+ <div class="item" ondblclick="likeAnim(${v.id},this)">
+  <div class="wm">PizTok @${v.owner}</div>
   <video src="${v.url}" loop playsinline onclick="this.paused?this.play():this.pause()"></video>
   <div class="info">
     <p class="font-bold">@${v.owner}</p>
-    <p class="text-[14px] mt-1 leading-4">${v.caption}</p>
-    <p class="text-[13px] mt-2 flex gap-2 items-center"><i class="fa-solid fa-music"></i><span class="music">Original sound - ${v.owner} • PizTok 99% sound 🔊</span></p>
+    <p class="text-[14px] mt-1">${v.caption}</p>
+    <p onclick="playSound('${v.sound}')" class="text-[13px] mt-2 flex gap-2 items-center bg-zinc-900/50 rounded-full px-2 py-1 w-fit"><i class="fa-solid fa-music"></i><span>${v.sound} 🔊 Click to play</span></p>
   </div>
   <div class="right">
     <div class="relative"><img src="https://i.pravatar.cc/100?u=${v.owner}" class="w-12 h-12 rounded-full border-2 border-white"><button onclick="follow(${v.id})" class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 ${v.followed?'bg-zinc-500':'bg-[#FE2C55]'} rounded-full text-[10px]">${v.followed?'✓':'+'}</button></div>
     <button onclick="like(${v.id})" class="flex flex-col items-center"><div class="btn"><i class="fa-solid fa-heart ${v.liked?'text-[#FE2C55]':''}"></i></div><span class="text-[12px] font-bold mt-1">${v.likes}</span></button>
-    <button onclick="openComm(${v.id})" class="flex flex-col items-center"><div class="btn"><i class="fa-solid fa-comment-dots"></i></div><span class="text-[12px] font-bold mt-1">${v.comments.length}</span></button>
-    <button class="flex flex-col items-center"><div class="btn"><i class="fa-solid fa-bookmark"></i></div><span class="text-[12px] font-bold mt-1">Save</span></button>
-    <button class="flex flex-col items-center"><div class="btn"><i class="fa-solid fa-share"></i></div><span class="text-[12px] font-bold mt-1">Share</span></button>
+    <button class="flex flex-col items-center"><div class="btn"><i class="fa-solid fa-comment-dots"></i></div><span class="text-[12px]">0</span></button>
+    <button onclick="downloadVid('${v.url}')" class="flex flex-col items-center"><div class="btn"><i class="fa-solid fa-download"></i></div><span class="text-[10px]">Save</span></button>
+    <button onclick="shareVid('${v.url}','${v.caption.replace(/'/g,"")}')" class="flex flex-col items-center"><div class="btn"><i class="fa-solid fa-share"></i></div><span class="text-[10px]">Share</span></button>
   </div>
  </div>
  `).join('');
- setTimeout(()=>{let v=feed.querySelector('video');if(v)v.play().catch(()=>{});},400);
- // profile grid
- let g=document.getElementById('grid'); let vc=document.getElementById('vCount'); let lc=document.getElementById('lCount');
- if(g){let mine=DB.videos.filter(x=>x.owner==='you'); if(vc)vc.textContent=mine.length; if(lc)lc.textContent=DB.videos.reduce((a,b)=>a+b.likes,0);
- g.innerHTML=mine.length?mine.map(v=>`<div class="aspect-[3/4] bg-black relative overflow-hidden"><video src="${v.url}" muted playsinline preload="metadata" class="w-full h-full object-cover" onloadeddata="try{this.currentTime=0.3}catch(e){}"></video><span class="absolute bottom-1 left-1 text-white text-[10px]"><i class="fa-solid fa-play"></i> ${v.likes}</span></div>`).join(''):'<p class="col-span-3 text-center py-10 text-zinc-500">No videos yet</p>';}
+ setTimeout(()=>{let vv=feed.querySelector('video'); if(vv)vv.play().catch(()=>{});},400);
+ let g=document.getElementById('grid'); if(g){let mine=DB.videos.filter(x=>x.owner==='you'); document.getElementById('vCount').textContent=mine.length; document.getElementById('lCount').textContent=DB.videos.reduce((a,b)=>a+b.likes,0);
+ g.innerHTML=mine.length?mine.map(v=>`<div class="aspect-[3/4] bg-black relative"><video src="${v.url}" muted playsinline preload="metadata" class="w-full h-full object-cover" onloadeddata="try{this.currentTime=0.3}catch(e){}"></video><span class="absolute bottom-1 left-1 text-white text-[10px]"><i class="fa-solid fa-play"></i> ${v.likes}</span><div class="absolute inset-0 flex items-center justify-center pointer-events-none"><span class="text-[8px] text-white/20 rotate-[-20deg] font-black">PizTok @${v.owner}</span></div></div>`).join(''):'<p class="col-span-3 text-center py-10 text-zinc-500">No videos</p>';}
+ renderNotifs();
 }
-
-function like(id){let v=DB.videos.find(x=>x.id==id);v.liked=!v.liked;v.likes+=v.liked?1:-1;save();render();}
-function follow(id){let v=DB.videos.find(x=>x.id==id);v.followed=!v.followed;save();render();}
-function openComm(id){let v=DB.videos.find(x=>x.id==id);document.getElementById('comm').classList.remove('hidden');document.getElementById('commList').innerHTML=v.comments.map(c=>`<div class="py-2 border-b text-sm">@user: ${c}</div>`).join('')||'<p class="text-zinc-500">No comments yet</p>';}
-function setTab(t){tab=t;document.getElementById('bFor').className=t=='foryou'?'font-bold text-[16px] border-b-2 border-white pb-1':'font-bold text-[16px] text-zinc-400';document.getElementById('bFol').className=t=='following'?'font-bold text-[16px] border-b-2 border-white pb-1':'font-bold text-[16px] text-zinc-400';render();}
-function showProfile(){document.getElementById('proPage').classList.remove('hidden');render();}
-function showFeed(){document.getElementById('proPage').classList.add('hidden');}
+function likeAnim(id,el){
+ like(id);
+ let h=document.createElement('div'); h.className='heartAnim'; h.innerHTML='<i class="fa-solid fa-heart"></i>'; el.appendChild(h); setTimeout(()=>h.remove(),900);
+}
+function like(id){let v=DB.videos.find(x=>x.id==id); if(!v)return; if(!v.liked){DB.notifs.unshift({text:`❤️ Someone liked your video: "${v.caption.slice(0,20)}"`,time:"now"}); document.getElementById('notifDot').classList.remove('hidden');} v.liked=!v.liked; v.likes+=v.liked?1:-1; save(); render();}
+function follow(id){let v=DB.videos.find(x=>x.id==id); v.followed=!v.followed; save(); render();}
+function downloadVid(url){let a=document.createElement('a'); a.href=url; a.download='piztok-video.mp4'; a.click(); alert('⬇️ Download started!');}
+function shareVid(url,cap){
+ if(navigator.share){navigator.share({title:'PizTok Video',text:cap,url:url});}
+ else{navigator.clipboard.writeText(window.location.href); alert('🔗 Link copied! Share to WhatsApp:\n'+cap);}
+}
+function playSound(name){alert('🎵 Playing sound: '+name+'\n(This is where music plays - original TikTok sound!)'); let p=document.getElementById('soundPlayer');}
+function doSearch(){let q=document.getElementById('sInput').value.toLowerCase(); let r=document.getElementById('sResult'); if(!q){r.innerHTML='Type to search...';return;} let f=DB.videos.filter(v=>v.caption.toLowerCase().includes(q)||v.owner.toLowerCase().includes(q)); r.innerHTML=f.length?f.map(v=>`<div class="py-2 border-b flex gap-2"><video src="${v.url}" class="w-12 h-12 rounded"></video><div><p class="font-bold">@${v.owner}</p><p class="text-sm">${v.caption.slice(0,40)}</p></div></div>`).join(''):'No results for '+q;}
+function renderNotifs(){let n=document.getElementById('notifList'); if(!n)return; n.innerHTML=DB.notifs.length?DB.notifs.map(x=>`<div class="py-3 border-b flex gap-3"><div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white"><i class="fa-solid fa-heart"></i></div><div><p class="text-sm">${x.text}</p><p class="text-xs text-zinc-500">${x.time}</p></div></div>`).join(''):'<p class="text-zinc-500 text-center">No notifications yet. When someone likes your video, e go show here!</p>';}
+function setTab(t){tab=t;document.getElementById('bFor').className=t=='foryou'?'font-bold border-b-2 border-white pb-1':'font-bold text-zinc-400';document.getElementById('bFol').className=t=='following'?'font-bold border-b-2 border-white pb-1':'font-bold text-zinc-400';render();}
+function showPage(p){
+ document.getElementById('feed').classList.add('hidden'); document.getElementById('searchPage').classList.add('hidden'); document.getElementById('inboxPage').classList.add('hidden'); document.getElementById('proPage').classList.add('hidden');
+ if(p=='search'){document.getElementById('searchPage').classList.remove('hidden');}
+ else if(p=='inbox'){document.getElementById('inboxPage').classList.remove('hidden'); document.getElementById('notifDot').classList.add('hidden');}
+ else if(p=='profile'){document.getElementById('proPage').classList.remove('hidden');}
+}
+function showFeed(){document.getElementById('searchPage').classList.add('hidden');document.getElementById('inboxPage').classList.add('hidden');document.getElementById('proPage').classList.add('hidden');document.getElementById('feed').classList.remove('hidden');render();}
 render();
 </script>
 </body>
