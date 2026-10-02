@@ -1,219 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>PizTok V101 STUDIO</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PizTok V101 FIXED</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{background:#000;color:#fff;font-family:-apple-system,sans-serif;overflow:hidden}
-.snap{scroll-snap-type:y mandatory;height:100vh;overflow-y:scroll}.snap::-webkit-scrollbar{display:none}
-.item{scroll-snap-align:start;height:100vh;width:100vw;position:relative;background:#000;display:flex;justify-content:center;overflow:hidden}
+body{background:#000;color:#fff;margin:0;overflow:hidden;font-family:sans-serif}
+.snap{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory}
+.snap::-webkit-scrollbar{display:none}
+.item{height:100vh;width:100vw;position:relative;display:flex;justify-content:center;background:#111;scroll-snap-align:start}
 .item video{height:100%;width:100%;max-width:420px;object-fit:cover}
-.right{position:absolute;right:8px;bottom:95px;display:flex;flex-direction:column;gap:16px;align-items:center;z-index:10}
-.btn{width:48px;height:48px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;backdrop-filter:blur(10px)}
-.info{position:absolute;bottom:90px;left:12px;right:70px;z-index:10}
-.wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-20deg);font-size:22px;font-weight:900;color:rgba(255,255,255,0.18);pointer-events:none;z-index:5;letter-spacing:2px}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid #222;display:flex;justify-content:space-around;padding:6px 0;z-index:30}
-.top{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;justify-content:center;gap:20px;padding:12px;background:linear-gradient(to bottom,rgba(0,0,0,0.9),transparent)}
-.heartAnim{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:80px;color:#FE2C55;animation:pop 0.9s ease;pointer-events:none;z-index:20}
-@keyframes pop{0%{transform:translate(-50%,-50%) scale(0)}20%{transform:translate(-50%,-50%) scale(1.2)}80%{transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-50%) scale(0);opacity:0}}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:50;display:flex;flex-direction:column}
+.right{position:absolute;right:10px;bottom:110px;display:flex;flex-direction:column;gap:18px;align-items:center;z-index:10}
+.btn{width:48px;height:48px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px}
+.info{position:absolute;bottom:95px;left:12px;right:80px;z-index:10;text-shadow:0 1px 2px #000}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid #222;display:flex;justify-content:space-around;padding:10px 0;z-index:99}
+.top{position:fixed;top:0;left:0;right:0;z-index:99;display:flex;gap:25px;justify-content:center;padding:14px;background:linear-gradient(#000,transparent)}
 </style>
 </head>
 <body>
-
-<div class="top">
-<button id="bFor" onclick="setTab('foryou')" class="font-bold border-b-2 border-white pb-1">For You</button>
-<button id="bFol" onclick="setTab('following')" class="font-bold text-zinc-400">Following</button>
-<button onclick="showPage('search')" class="ml-auto"><i class="fa-solid fa-magnifying-glass"></i></button>
-</div>
-
+<div class="top"><b style="border-bottom:2px solid #fff">For You</b><b style="color:#888">Following</b></div>
 <div id="feed" class="snap"></div>
-
-<!-- OFFICIAL TIKTOK UPLOAD MODAL -->
-<div id="uploadModal" class="hidden modal">
-<div class="flex justify-between p-4 border-b border-zinc-800"><button onclick="closeUpload()">Cancel</button><h3 class="font-bold">Upload video</h3><button id="postBtn" onclick="doPost()" class="bg-[#FE2C55] px-4 py-1 rounded font-bold">Post</button></div>
-<div class="flex-1 overflow-y-scroll p-4 flex flex-col md:flex-row gap-4 max-w-4xl mx-auto w-full">
-<div class="flex-1">
-<div id="dropZone" onclick="document.getElementById('up').click()" class="border-2 border-dashed border-zinc-600 rounded-xl h-64 md:h-[400px] flex flex-col items-center justify-center p-4 text-center cursor-pointer bg-zinc-900/50">
-<i class="fa-solid fa-cloud-arrow-up text-4xl mb-3"></i>
-<p class="font-bold">Select video to upload</p>
-<p class="text-zinc-400 text-sm mt-1">Or drag and drop a file</p>
-<p class="text-zinc-500 text-xs mt-4">MP4 or WebM<br>720x1280 resolution or higher<br>Up to 10 minutes<br>Less than 2GB</p>
-<video id="previewVid" class="hidden w-full h-full object-cover rounded-xl"></video>
-</div>
-</div>
-<div class="flex-1 space-y-4">
-<label class="text-sm font-bold">Caption</label>
-<textarea id="capInput" maxlength="2200" placeholder="Add caption... #hashtags @friends" class="w-full bg-zinc-900 rounded-lg p-3 h-28 text-white border border-zinc-800"></textarea>
-<div class="flex justify-between text-xs text-zinc-500"><span>Add hashtags</span><span id="capCount">0/2200</span></div>
-<label class="text-sm font-bold">Cover</label>
-<div class="bg-zinc-900 rounded-lg p-3 flex gap-2"><div class="w-20 h-28 bg-black rounded overflow-hidden"><video id="coverPrev" class="w-full h-full object-cover"></video></div><p class="text-xs text-zinc-400">Video thumbnail will be generated automatically. First frame will be used.</p></div>
-<label class="text-sm font-bold flex items-center gap-2"><i class="fa-solid fa-music"></i> Sound - Original sound will be used</label>
-</div>
-</div>
-</div>
-
-<!-- EDIT PROFILE MODAL - LIKE TIKTOK -->
-<div id="editModal" class="hidden modal bg-white text-black">
-<div class="flex justify-between p-4 border-b"><button onclick="closeEdit()">Cancel</button><h3 class="font-bold">Edit profile</h3><button onclick="saveProfile()" class="font-bold">Save</button></div>
-<div class="p-6 space-y-6 overflow-y-scroll">
-<div class="flex flex-col items-center">
-<div class="relative">
-<img id="editAvatarPrev" src="" class="w-24 h-24 rounded-full object-cover">
-<button onclick="document.getElementById('avatarInput').click()" class="absolute bottom-0 right-0 w-7 h-7 bg-white border rounded-full flex items-center justify-center"><i class="fa-solid fa-pencil text-xs"></i></button>
-</div>
-<button onclick="document.getElementById('avatarInput').click()" class="mt-3 text-sm font-bold border px-4 py-1 rounded">Change photo</button>
-<input type="file" id="avatarInput" accept="image/*" hidden>
-</div>
-<div><label class="text-sm text-zinc-500">Name</label><input id="editName" class="w-full border-b py-2 font-bold outline-none"></div>
-<div><label class="text-sm text-zinc-500">Username</label><input id="editUsername" class="w-full border-b py-2 outline-none"></div>
-<div><label class="text-sm text-zinc-500">Bio</label><textarea id="editBio" maxlength="80" placeholder="Add a bio to your profile" class="w-full border-b py-2 outline-none h-20 resize-none"></textarea><p class="text-xs text-zinc-400 text-right"><span id="bioCount">0</span>/80</p></div>
-<div><label class="text-sm text-zinc-500">Link (Instagram, YouTube...)</label><input id="editLink" placeholder="https://..." class="w-full border-b py-2 outline-none"></div>
-</div>
-</div>
-
-<!-- SEARCH PAGE -->
-<div id="searchPage" class="hidden fixed inset-0 bg-black z-20 pt-14 px-4">
-<div class="flex gap-2"><input id="sInput" oninput="doSearch()" placeholder="Search users, sounds, hashtags..." class="flex-1 bg-zinc-900 rounded-full px-4 py-2 text-white"><span onclick="showFeed()" class="py-2">Cancel</span></div>
-<div id="sResult" class="mt-4 text-zinc-400">Type to search...</div>
-</div>
-
-<!-- INBOX -->
-<div id="inboxPage" class="hidden fixed inset-0 bg-white text-black z-20 pt-12">
-<div class="flex justify-between px-4 py-3 border-b font-bold"><h2>Inbox</h2><span onclick="showFeed()">✕</span></div>
-<div id="notifList" class="p-4"></div>
-</div>
-
-<!-- PROFILE PAGE - OFFICIAL TIKTOK STYLE -->
-<div id="proPage" class="hidden fixed inset-0 bg-white text-black overflow-y-scroll z-20">
-<div class="pt-12 px-4 pb-20 max-w-[500px] mx-auto">
-<div class="flex justify-between items-center"><i class="fa-solid fa-arrow-left" onclick="showFeed()"></i><div class="flex gap-4"><i class="fa-solid fa-share"></i><i class="fa-solid fa-gear" onclick="showSettings()"></i></div></div>
-<div class="flex flex-col items-center mt-4">
-<img id="profileAvatar" src="" class="w-24 h-24 rounded-full object-cover">
-<h2 id="profileUsername" class="font-bold text-lg mt-3">@you</h2>
-<h3 id="profileName" class="font-bold text-sm"></h3>
-<div class="flex gap-6 mt-3 text-center"><div><b id="vCount">0</b><br><span class="text-zinc-500 text-sm">Following</span></div><div><b>1.2K</b><br><span class="text-zinc-500 text-sm">Followers</span></div><div><b id="lCount">0</b><br><span class="text-zinc-500 text-sm">Likes</span></div></div>
-<p id="profileBio" class="text-sm mt-3 text-center"></p>
-<a id="profileLink" href="#" target="_blank" class="text-sm font-bold mt-1 flex gap-1 items-center"><i class="fa-solid fa-link"></i> <span></span></a>
-<div class="flex gap-2 mt-4 w-full"><button onclick="openEdit()" class="flex-1 border border-zinc-300 py-2 rounded font-bold">Edit profile</button><button onclick="triggerUploadOfficial()" class="flex-1 border border-zinc-300 py-2 rounded"><i class="fa-solid fa-plus"></i> Upload</button></div>
-</div>
-<div class="flex justify-around mt-6 border-b"><button class="border-b-2 border-black pb-2"><i class="fa-solid fa-table-cells"></i></button><button class="opacity-30 pb-2"><i class="fa-solid fa-heart"></i></button><button class="opacity-30 pb-2"><i class="fa-solid fa-lock"></i></button></div>
-<div id="grid" class="grid grid-cols-3 gap-[1px] bg-zinc-200 mt-1"></div>
-</div>
-</div>
-
-<!-- SETTINGS / STUDIO -->
-<div id="settingsPage" class="hidden fixed inset-0 bg-white text-black z-40 pt-12 px-4 overflow-y-scroll">
-<div class="flex gap-3 items-center border-b pb-3"><i class="fa-solid fa-arrow-left" onclick="document.getElementById('settingsPage').classList.add('hidden')"></i><h2 class="font-bold">Settings and Studio</h2></div>
-<div class="mt-4 space-y-4">
-<div class="bg-zinc-100 p-4 rounded-xl"><h3 class="font-bold">Creator Studio</h3><p class="text-sm text-zinc-500">Manage your videos, analytics</p></div>
-<div class="space-y-3 pt-4"><p class="flex justify-between py-3 border-b">Business Account <i class="fa-solid fa-chevron-right text-zinc-400"></i></p><p class="flex justify-between py-3 border-b">Privacy <i class="fa-solid fa-chevron-right"></i></p><p class="flex justify-between py-3 border-b">Clear Cache ( <span id="cacheSize">0 videos</span> ) <span class="text-red-500" onclick="clearCache()">Clear</span></p></div>
-</div>
-</div>
-
 <div class="nav">
-<button onclick="showFeed()" class="flex flex-col items-center"><i class="fa-solid fa-house text-[20px]"></i><span class="text-[9px]">Home</span></button>
-<button onclick="showPage('search')" class="flex flex-col items-center opacity-60"><i class="fa-solid fa-magnifying-glass text-[20px]"></i><span class="text-[9px]">Discover</span></button>
-<button onclick="triggerUploadOfficial()" class="flex flex-col items-center justify-center"><div class="bg-white text-black px-5 py-[6px] rounded-[8px] flex items-center border-2 border-black relative"><div class="absolute -left-[6px] top-[1px] bottom-[1px] bg-[#25F4EE] w-full rounded-[8px] -z-10"></div><div class="absolute -right-[6px] top-[1px] bottom-[1px] bg-[#FE2C55] w-full rounded-[8px] -z-10"></div><i class="fa-solid fa-plus text-[18px]"></i></div></button>
-<button onclick="showPage('inbox')" class="flex flex-col items-center opacity-60 relative"><i class="fa-solid fa-inbox text-[20px]"></i><span id="notifDot" class="hidden absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span><span class="text-[9px]">Inbox</span></button>
-<button onclick="showPage('profile')" class="flex flex-col items-center"><i class="fa-regular fa-user text-[20px]"></i><span class="text-[9px]">Profile</span></button>
+<div style="text-align:center"><i class="fa-solid fa-house"></i><br><span style="font-size:9px">Home</span></div>
+<div style="text-align:center" onclick="location.reload()"><i class="fa-solid fa-rotate"></i><br><span style="font-size:9px">Refresh</span></div>
+<div onclick="document.getElementById('up').click()" style="background:#fff;color:#000;padding:6px 16px;border-radius:6px"><i class="fa-solid fa-plus"></i></div>
+<div style="text-align:center"><i class="fa-solid fa-inbox"></i><br><span style="font-size:9px">Inbox</span></div>
+<div style="text-align:center"><i class="fa-regular fa-user"></i><br><span style="font-size:9px">Profile</span></div>
 </div>
-
 <input type="file" id="up" accept="video/*" hidden>
-
 <script>
-let DB=JSON.parse(localStorage.getItem('piz100')||'{"videos":[{"id":1,"url":"https://www.w3schools.com/html/mov_bbb.mp4","owner":"piztok_official","caption":"V100 STUDIO is here 🔥 Now you can change profile pic & edit bio! #fyp","likes":3421,"liked":false,"followed":false,"sound":"Original sound - PizTok"}],"notifs":[],"profile":{"name":"Wisdom","username":"you","bio":"PizTok Creator 🚀 V100 STUDIO","link":"https://piztok.com","avatar":"https://i.pravatar.cc/200?u=you"}}');
-let tab='foryou'; let tempVideoUrl=null;
-function save(){localStorage.setItem('piz100',JSON.stringify(DB));}
-function getAvatar(){return DB.profile.avatar || "https://i.pravatar.cc/200?u=you";}
-
-// UPLOAD - OFFICIAL STYLE
-function triggerUploadOfficial(){document.getElementById('uploadModal').classList.remove('hidden');}
-function closeUpload(){document.getElementById('uploadModal').classList.add('hidden'); tempVideoUrl=null; document.getElementById('previewVid').classList.add('hidden'); document.getElementById('dropZone').querySelector('p').parentElement?.classList?.remove('hidden'); document.getElementById('capInput').value=""; document.getElementById('up').value="";}
-document.getElementById('up').addEventListener('change', e=>{
- let f=e.target.files[0]; if(!f)return;
- tempVideoUrl=URL.createObjectURL(f);
- let prev=document.getElementById('previewVid'); prev.src=tempVideoUrl; prev.classList.remove('hidden');
- document.getElementById('coverPrev').src=tempVideoUrl;
-});
-document.getElementById('capInput').addEventListener('input', e=>{document.getElementById('capCount').textContent=e.target.value.length+"/2200";});
-function doPost(){
- if(!tempVideoUrl){alert("Select video first!");return;}
- let cap=document.getElementById('capInput').value||"My PizTok video 🚀 #piztok";
- DB.videos.unshift({id:Date.now(),url:tempVideoUrl,owner:DB.profile.username,caption:cap,likes:0,liked:false,followed:false,sound:"Original sound - "+DB.profile.username});
- DB.notifs.unshift({text:`You uploaded: "${cap.slice(0,30)}..."`,time:"now"});
- save(); closeUpload(); render(); showPage('profile'); alert("✅ Posted successfully!");
+let DB = JSON.parse(localStorage.getItem('piz101')||'null');
+if(!DB){
+DB={videos:[{id:1,url:"https://www.w3schools.com/html/mov_bbb.mp4",owner:"piztok_official",cap:"V101 DON WORK! 🔥 If you see this video playing, your PizTok don LIVE! Now tap + to upload your own video #fyp"}]};
+localStorage.setItem('piz101',JSON.stringify(DB));
 }
-
-// EDIT PROFILE
-function openEdit(){
- document.getElementById('editModal').classList.remove('hidden');
- document.getElementById('editAvatarPrev').src=getAvatar();
- document.getElementById('editName').value=DB.profile.name;
- document.getElementById('editUsername').value=DB.profile.username;
- document.getElementById('editBio').value=DB.profile.bio;
- document.getElementById('editLink').value=DB.profile.link;
- document.getElementById('bioCount').textContent=DB.profile.bio.length;
-}
-function closeEdit(){document.getElementById('editModal').classList.add('hidden');}
-document.getElementById('avatarInput').addEventListener('change', e=>{
- let f=e.target.files[0]; if(!f)return;
- let reader=new FileReader(); reader.onload=function(ev){document.getElementById('editAvatarPrev').src=ev.target.result; document.getElementById('editAvatarPrev').dataset.new=ev.target.result;}; reader.readAsDataURL(f);
-});
-document.getElementById('editBio').addEventListener('input', e=>{document.getElementById('bioCount').textContent=e.target.value.length;});
-function saveProfile(){
- let newAvatar=document.getElementById('editAvatarPrev').dataset.new || DB.profile.avatar;
- DB.profile.name=document.getElementById('editName').value;
- DB.profile.username=document.getElementById('editUsername').value||"you";
- DB.profile.bio=document.getElementById('editBio').value;
- DB.profile.link=document.getElementById('editLink').value;
- DB.profile.avatar=newAvatar;
- save(); closeEdit(); render(); alert("Profile updated! ✅");
-}
-
+let feed=document.getElementById('feed');
 function render(){
- // Profile UI
- document.getElementById('profileAvatar').src=getAvatar();
- document.getElementById('profileUsername').textContent="@"+DB.profile.username;
- document.getElementById('profileName').textContent=DB.profile.name;
- document.getElementById('profileBio').textContent=DB.profile.bio;
- let linkEl=document.getElementById('profileLink'); if(DB.profile.link){linkEl.querySelector('span').textContent=DB.profile.link; linkEl.href=DB.profile.link; linkEl.classList.remove('hidden');}else{linkEl.classList.add('hidden');}
- document.getElementById('cacheSize').textContent=DB.videos.length+" videos";
-
- let feed=document.getElementById('feed');
- let list=tab==='following'?DB.videos.filter(v=>v.followed):DB.videos;
- feed.innerHTML=list.map(v=>`
- <div class="item" ondblclick="likeAnim(${v.id},this)">
-  <div class="wm">PizTok @${v.owner}</div>
-  <video src="${v.url}" loop playsinline onclick="this.paused?this.play():this.pause()"></video>
-  <div class="info">
-    <p class="font-bold">@${v.owner}</p>
-    <p class="text-[14px] mt-1">${v.caption}</p>
-    <p class="text-[13px] mt-2 flex gap-2 items-center bg-zinc-900/50 rounded-full px-2 py-1 w-fit"><i class="fa-solid fa-music"></i><span>${v.sound}</span></p>
-  </div>
-  <div class="right">
-    <div class="relative"><img src="${v.owner===DB.profile.username?getAvatar():'https://i.pravatar.cc/100?u='+v.owner}" class="w-12 h-12 rounded-full border-2 border-white object-cover"><button onclick="follow(${v.id})" class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 ${v.followed?'bg-zinc-500':'bg-[#FE2C55]'} rounded-full text-[10px]">${v.followed?'✓':'+'}</button></div>
-    <button onclick="like(${v.id})" class="flex flex-col items-center"><div class="btn"><i class="fa-solid fa-heart ${v.liked?'text-[#FE2C55]':''}"></i></div><span class="text-[12px] font-bold mt-1">${v.likes}</span></button>
-    <button class="flex flex-col items-center"><div class="btn"><i class="fa-solid fa-comment-dots"></i></div><span class="text-[12px]">0</span></button>
-    <button onclick="downloadVid('${v.url}')" class="flex flex-col items-center"><div class="btn"><i class="fa-solid fa-download"></i></div></button>
-    <button onclick="shareVid('${v.url}')" class="flex flex-col items-center"><div class="btn"><i class="fa-solid fa-share"></i></div></button>
-  </div>
- </div>
- `).join('');
- setTimeout(()=>{let vv=feed.querySelector('video'); if(vv)vv.play().catch(()=>{});},400);
- let g=document.getElementById('grid'); let mine=DB.videos.filter(x=>x.owner===DB.profile.username || x.owner==='you'); document.getElementById('vCount').textContent=mine.length; document.getElementById('lCount').textContent=DB.videos.reduce((a,b)=>a+b.likes,0);
- g.innerHTML=mine.length?mine.map(v=>`<div class="aspect-[3/4] bg-black relative"><video src="${v.url}" muted class="w-full h-full object-cover"></video><span class="absolute bottom-1 left-1 text-white text-[10px]"><i class="fa-solid fa-play"></i> ${v.likes}</span></div>`).join(''):'<div class="col-span-3 py-16 text-center"><p class="text-zinc-500">No videos yet</p><button onclick="triggerUploadOfficial()" class="mt-3 bg-[#FE2C55] text-white px-6 py-2 rounded font-bold">Upload your first video</button></div>';
- renderNotifs();
+feed.innerHTML=DB.videos.map(v=>`<div class="item"><video src="${v.url}" loop autoplay muted playsinline controls style="display:block"></video><div class="info"><b>@${v.owner}</b><p style="font-size:14px;margin-top:6px">${v.cap}</p><p style="font-size:12px;margin-top:4px">♫ Original sound - PizTok</p></div><div class="right"><img src="https://i.pravatar.cc/100?u=${v.owner}" style="width:50px;height:50px;border-radius:50%;border:2px solid #fff"><div class="btn" onclick="this.style.color='red'">❤️<br><span style="font-size:10px">999</span></div><div class="btn"><i class="fa-solid fa-comment-dots"></i></div><div class="btn"><i class="fa-solid fa-share"></i></div></div></div>`).join('');
+let vid=feed.querySelector('video'); if(vid){vid.play().catch(()=>{});}
 }
-function likeAnim(id,el){like(id); let h=document.createElement('div'); h.className='heartAnim'; h.innerHTML='<i class="fa-solid fa-heart"></i>'; el.appendChild(h); setTimeout(()=>h.remove(),900);}
-function like(id){let v=DB.videos.find(x=>x.id==id); v.liked=!v.liked; v.likes+=v.liked?1:-1; if(v.liked){DB.notifs.unshift({text:`❤️ Someone liked: "${v.caption.slice(0,20)}"`,time:"now"}); document.getElementById('notifDot').classList.remove('hidden');} save(); render();}
-function follow(id){let v=DB.videos.find(x=>x.id==id); v.followed=!v.followed; save(); render();}
-function downloadVid(url){let a=document.createElement('a'); a.href=url; a.download='piztok.mp4'; a.click();}
-function shareVid(url){navigator.clipboard.writeText(location.href); alert('Link copied!');}
-function doSearch(){let q=document.getElementById('sInput').value.toLowerCase(); let r=document.getElementById('sResult'); if(!q){r.innerHTML='Type to search...';return;} let f=DB.videos.filter(v=>v.caption.toLowerCase().includes(q)||v.owner.toLowerCase().includes(q)); r.innerHTML=f.length?f.map(v=>`<div class="py-2 border-b flex gap-2"><video src="${v.url}" class="w-12 h-12 rounded"></video><div><p class="font-bold">@${v.owner}</p><p class="text-sm">${v.caption.slice(0,40)}</p></div></div>`).join(''):'No results';}
-function renderNotifs(){let n=document.getElementById('notifList'); n.innerHTML=DB.notifs.length?DB.notifs.map(x=>`<div class="py-3 border-b flex gap-3"><div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white"><i class="fa-solid fa-heart"></i></div><div><p class="text-sm">${x.text}</p><p class="text-xs text-zinc-500">${x.time}</p></div></div>`).join(''):'<p class="text-zinc-500 text-center">No notifications yet</p>';}
-function setTab(t){tab=t;document.getElementById('bFor').className=t=='foryou'?'font-bold border-b-2 border-white pb-1':'font-bold text-zinc-400';document.getElementById('bFol').className=t=='following'?'font-bold border-b-2 border-white pb-1':'font-bold text-zinc-400';render();}
-function showPage(p){document.getEle
+document.getElementById('up').addEventListener('change',e=>{
+let f=e.target.files[0]; if(!f)return;
+let url=URL.createObjectURL(f);
+DB.videos.unshift({id:Date.now(),url:url,owner:"you",cap:"My first PizTok video 🚀 #trending"});
+localStorage.setItem('piz101',JSON.stringify(DB));
+render();
+alert("Video Added! ✅ Scroll to see am");
+});
+render();
+</script>
+</body>
+</html>
