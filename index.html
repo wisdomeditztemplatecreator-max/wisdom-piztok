@@ -1,49 +1,125 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PizTok V50 FINAL</title><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"><script src="https://js.paystack.co/v1/inline.js"></script><style>*{font-family:system-ui}body{margin:0;background:#000;color:#fff}.feed{height:100dvh;overflow-y:scroll;scroll-snap-type:y mandatory}.video-card{height:100dvh;scroll-snap-align:start;position:relative;background:#000}.video-media{width:100%;height:100%;object-fit:cover}</style></head><body>
-<div class="fixed top-0 left-0 right-0 z-30 flex justify-between items-center px-3 h-[44px] bg-black/80"><div class="flex items-center gap-1"><div class="w-7 h-7 rounded-full bg-white flex items-center justify-center"><span class="text-black font-black">P</span></div><span class="font-black">PizTok</span><span class="text-[8px] bg-[#FE2C55] px-1 rounded ml-1">V50</span></div><div class="flex gap-2"><button onclick="openStudio()" class="bg-white/20 px-3 py-1 rounded-full text-[11px] font-bold">Studio</button><button onclick="openOwner()" class="bg-[#25F4EE] text-black px-3 py-1 rounded-full text-[11px] font-bold">Owner</button></div></div>
-<div class="feed" id="feed" style="padding-top:44px"></div>
-<div class="fixed bottom-0 left-0 right-0 bg-black border-t border-white/10 flex justify-around items-center h-[72px] z-40"><button class="flex flex-col items-center"><i class="fa-solid fa-house text-[20px]"></i><span class="text-[9px]">Home</span></button><button onclick="openSearch()" class="flex flex-col items-center opacity-60"><i class="fa-solid fa-magnifying-glass"></i><span class="text-[9px]">Discover</span></button><button onclick="openCreate()" class="flex flex-col items-center"><div class="w-[52px] h-[32px] bg-white rounded-[10px] flex items-center justify-center"><i class="fa-solid fa-plus text-black"></i></div></button><button onclick="openInbox()" class="flex flex-col items-center opacity-60"><i class="fa-solid fa-inbox"></i><span class="text-[9px]">Inbox</span></button><button onclick="openProfile()" class="flex flex-col items-center opacity-60"><i class="fa-solid fa-user"></i><span class="text-[9px]">Profile</span></button></div>
-<div id="createPage" class="fixed inset-0 bg-[#0f0f0f] z-[60] hidden flex-col overflow-y-auto"><div class="p-3 flex justify-between items-center border-b border-white/10"><button onclick="closeAll()">Cancel</button><b>Create</b><button onclick="postVideo()" class="bg-[#FE2C55] px-5 py-1 rounded-full font-bold text-[13px]">Post</button></div><div class="p-4"><div id="uploadBox" onclick="document.getElementById('fileIn').click()" class="w-full h-[380px] bg-black border-2 border-dashed border-white/20 rounded-2xl flex flex-col items-center justify-center gap-2"><i id="upIcon" class="fa-solid fa-cloud-arrow-up text-3xl opacity-20"></i><p id="upText" class="text-[13px]">Tap to upload video/photo from gallery</p><img id="prevImg" class="hidden w-full h-full object-cover rounded-2xl"><video id="prevVid" class="hidden w-full h-full object-cover rounded-2xl" controls playsinline></video></div><input type="file" id="fileIn" accept="video/*,image/*" hidden onchange="handleFile(this)"><input id="capIn" placeholder="Add caption #fyp #viral" class="w-full mt-4 bg-[#1e1e1e] rounded-xl px-4 py-3 text-[14px] outline-none"></div></div></div>
-<div id="commentsPage" class="fixed inset-0 bg-black/60 z-[70] hidden flex-col justify-end"><div class="bg-[#121212] rounded-t-[18px] max-h-[75vh] flex flex-col"><div class="p-4 flex justify-between border-b border-white/10"><span id="commentCount" class="font-bold">0 comments</span><button onclick="closeComments()" class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center"><i class="fa-solid fa-xmark text-[12px]"></i></button></div><div id="commentsList" class="flex-1 overflow-y-auto p-4 space-y-4 min-h-[200px]"></div><div class="p-3 border-t border-white/10 flex gap-2 items-center"><img id="myAv" src="https://i.pravatar.cc/100?img=5" class="w-8 h-8 rounded-full"><input id="commentInput" placeholder="Add comment... like TikTok" class="flex-1 bg-[#1e1e1e] rounded-full px-4 py-2 text-[13px] outline-none"><button onclick="postComment()" class="text-[#FE2C55] font-bold">Post</button></div></div></div>
-<div id="studioPage" class="fixed inset-0 bg-[#080808] z-[55] hidden overflow-y-auto p-4 pt-12"><button onclick="closeAll()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mb-3"><i class="fa-solid fa-arrow-left text-[12px]"></i></button><h2 class="font-bold">Creator Studio</h2><div class="bg-gradient-to-br from-[#FE2C55] to-orange-500 rounded-2xl p-5 mt-4"><p class="text-[11px]">Earnings</p><h1 class="text-[30px] font-black">₦<span id="earnTotal">12,450</span></h1><button onclick="paystackPayout()" class="mt-3 bg-white text-black px-4 py-2 rounded-full text-[12px] font-bold">Withdraw Paystack</button></div><div id="studioList" class="mt-4 space-y-2"></div></div>
-<div id="ownerPage" class="fixed inset-0 bg-[#050505] z-[55] hidden overflow-y-auto p-4 pt-12"><button onclick="closeAll()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mb-3"><i class="fa-solid fa-arrow-left text-[12px]"></i></button><h2 class="font-bold">👑 Owner Dashboard - How My App Is Working</h2><div class="bg-[#111] border border-yellow-500/30 rounded-2xl p-5 mt-4"><p class="text-[10px] text-yellow-400 font-bold">OWNER REVENUE 30% CUT</p><h1 class="text-[30px] font-black">₦<span id="ownerTotal">89,230</span></h1><div class="grid grid-cols-3 gap-2 mt-4 text-center"><div class="bg-black/40 rounded-xl p-3"><p class="font-black">247</p><p class="text-[10px] text-white/40">Users</p></div><div class="bg-black/40 rounded-xl p-3"><p class="font-black">1,103</p><p class="text-[10px] text-white/40">Videos</p></div><div class="bg-black/40 rounded-xl p-3"><p class="font-black">₦298k</p><p class="text-[10px] text-white/40">Paystack</p></div></div></div><div id="txList" class="mt-4 text-[11px] space-y-2"></div><div class="mt-4 bg-[#121212] rounded-xl p-4"><p class="font-bold text-[12px]">Top Creators (Your 30%)</p><p class="text-[11px] mt-2">@frelyx_editz - You: ₦3,180</p><p class="text-[11px]">@its.ferdyy - You: ₦2,100</p></div></div>
-<div id="profilePage" class="fixed inset-0 bg-white text-black z-[55] hidden overflow-y-auto p-4 pt-12"><button onclick="closeAll()" class="bg-black text-white px-4 py-2 rounded-full">← Back</button><h2 id="pName" class="font-black mt-4">FRELYX EDITZ</h2><p id="pHandle">@frelyx_editz</p><div id="pGrid" class="grid grid-cols-3 gap-1 mt-4"></div></div>
-<div id="searchPage" class="fixed inset-0 bg-[#080808] z-[55] hidden overflow-y-auto p-4 pt-12"><button onclick="closeAll()" class="mb-3 bg-white/10 px-4 py-2 rounded-full">← Back</button><input id="searchInput" placeholder="Search" class="w-full bg-[#1e1e1e] rounded-full px-4 py-3" oninput="doSearch(this.value)"><div id="searchResults" class="mt-4"></div></div>
-<div id="inboxPage" class="fixed inset-0 bg-[#080808] z-[55] hidden overflow-y-auto p-4 pt-12"><button onclick="closeAll()" class="mb-3">← Back</button><h2 class="font-bold">Inbox</h2><div id="inboxList" class="mt-4 space-y-2"></div></div>
-<div id="onboard" class="fixed inset-0 bg-black z-[90] flex flex-col items-center justify-center p-6 text-center"><h1 class="font-black text-[26px]">PizTok V50</h1><p class="text-[12px] text-white/60 mt-1">Create your own page like TikTok - Full Package</p><input id="obName" placeholder="Name e.g FRELYX EDITZ" class="w-full max-w-[320px] mt-6 bg-[#1e1e1e] rounded-xl px-4 py-3 text-[14px] outline-none"><input id="obHandle" placeholder="@handle e.g frelyx_editz" class="w-full max-w-[320px] mt-3 bg-[#1e1e1e] rounded-xl px-4 py-3 text-[14px] outline-none"><input id="obEmail" placeholder="Paystack email" class="w-full max-w-[320px] mt-3 bg-[#1e1e1e] rounded-xl px-4 py-3 text-[14px] outline-none"><button onclick="createAcc()" class="w-full max-w-[320px] mt-4 bg-[#FE2C55] py-3 rounded-full font-bold">Create My Page</button><button onclick="skip()" class="w-full max-w-[320px] mt-2 bg-[#1a1a1a] py-3 rounded-full font-bold text-[13px]">Skip - View Feed</button></div>
-<div id="toast" class="fixed bottom-[90px] left-1/2 -translate-x-1/2 bg-white text-black px-4 py-2 rounded-full text-[12px] font-bold z-[100] hidden"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Wisdom PizTok V50</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body{background:#000;color:#fff;overscroll-behavior:none;margin:0}
+video{object-fit:cover}
+.no-scrollbar::-webkit-scrollbar{display:none}
+</style>
+</head>
+<body class="bg-black text-white">
+
+<!-- HEADER -->
+<div class="fixed top-0 left-0 right-0 z-20 flex justify-center gap-6 py-3 bg-gradient-to-b from-black/80 to-transparent">
+<button id="tabForYou" onclick="switchTab('foryou')" class="font-bold text-white border-b-2 border-white pb-1">For You</button>
+<button id="tabFollowing" onclick="switchTab('following')" class="font-bold text-zinc-400">Following</button>
+</div>
+
+<!-- FEED -->
+<div id="feed" class="h-screen w-screen overflow-y-scroll snap-y snap-mandatory no-scrollbar"></div>
+
+<!-- PROFILE GRID -->
+<div id="profilePage" class="hidden min-h-screen pt-14 max-w-[500px] mx-auto">
+<div class="p-4 flex gap-4 items-center">
+<img src="https://i.pravatar.cc/100" class="w-20 h-20 rounded-full">
+<div><h2 class="font-bold text-lg">@you</h2><p id="vidCount" class="text-zinc-400 text-sm">0 videos</p></div>
+</div>
+<div id="pGrid" class="grid grid-cols-3 gap-[2px] mt-2"></div>
+<p id="noVid" class="text-center text-zinc-500 mt-10 hidden">No videos yet. Upload!</p>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="fixed bottom-0 left-0 right-0 z-30 bg-black border-t border-zinc-900 flex justify-around py-2">
+<button onclick="showPage('feed')" class="flex flex-col items-center"><i class="fa-solid fa-house"></i><span class="text-[10px]">Home</span></button>
+<button onclick="document.getElementById('fileUp').click()" class="flex flex-col items-center"><div class="bg-white text-black px-3 py-1 rounded-md"><i class="fa-solid fa-plus"></i></div><span class="text-[10px] mt-1">Upload</span></button>
+<button onclick="showPage('profile')" class="flex flex-col items-center"><i class="fa-regular fa-user"></i><span class="text-[10px]">Profile</span></button>
+</div>
+
+<input type="file" id="fileUp" accept="video/*" hidden>
+
 <script>
-let DB=JSON.parse(localStorage.getItem('piztok_v50')||'{"videos":[],"comments":{},"earnings":12450,"ownerEarnings":89230,"tx":[]}');let ME=JSON.parse(localStorage.getItem('piztok_me_v50')||'null');let upUrl=null,curVid=null;
-function save(){localStorage.setItem('piztok_v50',JSON.stringify(DB));}function saveMe(){localStorage.setItem('piztok_me_v50',JSON.stringify(ME));}
-function toast(t){let e=document.getElementById('toast');e.innerText=t;e.classList.remove('hidden');setTimeout(()=>e.classList.add('hidden'),2000);}
-function fmt(n){if(n>=1000000)return (n/1000000).toFixed(1)+'M';if(n>=1000)return (n/1000).toFixed(1)+'K';return n;}
-function init(){let feed=document.getElementById('feed');feed.innerHTML='';let vids=DB.videos;if(vids.length==0){vids=[{id:'v1',user:'its.ferdyy',handle:'its.ferdyy',avatar:'https://i.pravatar.cc/100?img=32',likes:32100,comments:421,shares:1200,caption:'I see difference in your eyes 😍 #Niska #viral',music:'Original sound - Niska',img:'https://images.unsplash.com/photo-1518834107812-67b0b288f498?w=800',time:'1d ago'},{id:'v2',user:'afrobeats_daily',handle:'afrobeats_daily',avatar:'https://i.pravatar.cc/100?img=12',likes:98000,comments:1200,shares:3400,caption:'V50 FULL PACKAGE don land! 🔥 Exactly like TikTok',music:'Asake - Lonely',img:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800',time:'3h ago'},{id:'v3',user:'frelyx_editz',handle:'frelyx_editz',avatar:'https://i.pravatar.cc/100?img=8',likes:10600,comments:89,shares:234,caption:'New CapCut Template Link in bio #capcut',music:'FRELYX EDITZ',img:'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800',time:'5h ago'}];DB.videos=vids;save();}
-vids.forEach(v=>{let d=document.createElement('div');d.className='video-card';d.innerHTML=`<img class="video-media" src="${v.img}"><div class="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/70 pointer-events-none"></div><div class="absolute bottom-[90px] left-3 right-[80px]"><p class="font-bold text-[14px]">@${v.handle} • ${v.time}</p><p class="text-[13px] mt-1">${v.caption}</p><p class="text-[11px] opacity-70 mt-1"><i class="fa-solid fa-music"></i> ${v.music}</p><div class="flex gap-2 mt-2"><button onclick="giftCreator('${v.handle}')" class="bg-[#FE2C55] text-[10px] px-3 py-1 rounded-full font-bold">Gift ₦100</button><button onclick="shareLink('${v.id}')" class="bg-white/20 text-[10px] px-3 py-1 rounded-full">?u=${v.handle}&v=${v.id}</button></div></div><div class="absolute bottom-[90px] right-2 flex flex-col items-center gap-4"><img src="${v.avatar}" class="w-[46px] h-[46px] rounded-full border-2 border-white"><button onclick="likeVid('${v.id}',this)" class="flex flex-col items-center"><div class="w-[46px] h-[46px] rounded-full bg-white/15 flex items-center justify-center"><i class="fa-solid fa-heart text-[22px] ${v.liked?'text-[#FE2C55]':''}"></i></div><span class="text-[11px] mt-1">${fmt(v.likes)}</span></button><button onclick="openComments('${v.id}')" class="flex flex-col items-center"><div class="w-[46px] h-[46px] rounded-full bg-white/15 flex items-center justify-center"><i class="fa-solid fa-comment-dots"></i></div><span class="text-[11px] mt-1">${fmt(v.comments)}</span></button><button onclick="shareLink('${v.id}')" class="flex flex-col items-center"><div class="w-[46px] h-[46px] rounded-full bg-white/15 flex items-center justify-center"><i class="fa-solid fa-share"></i></div><span class="text-[11px] mt-1">${fmt(v.shares)}</span></button></div>`;feed.appendChild(d);});
-document.getElementById('earnTotal').innerText=DB.earnings.toLocaleString();document.getElementById('ownerTotal').innerText=DB.ownerEarnings.toLocaleString();renderP();renderStudio();renderInbox();updTx();
-let qp=new URLSearchParams(location.search);if(qp.get('u')&&qp.get('v')){setTimeout(()=>openComments(qp.get('v')),700);toast('Opened link?u='+qp.get('u')+'&v='+qp.get('v')+' - anyone can comment');}
+let DB = JSON.parse(localStorage.getItem('piztok_v50') || '{"videos":[]}');
+let ME = {handle:'you'};
+let currentTab = 'foryou';
+
+function save(){localStorage.setItem('piztok_v50', JSON.stringify(DB));}
+
+document.getElementById('fileUp').addEventListener('change', function(e){
+ let f=e.target.files[0]; if(!f)return;
+ let url=URL.createObjectURL(f);
+ let nv={id:Date.now(), url:url, owner:'you', caption:'My new video #piztok', likes: Math.floor(Math.random()*100), liked:false, comments:[], isFollowing:false};
+ DB.videos.unshift(nv);
+ save(); renderAll();
+ alert('Uploaded! Go to Profile to see it - NO BLACK!');
+});
+
+function renderAll(){renderFeed();renderP();}
+
+function renderFeed(){
+ let fd=document.getElementById('feed');
+ let list = currentTab==='following'? DB.videos.filter(v=>v.isFollowing) : DB.videos;
+ if(list.length===0){ fd.innerHTML=`<div class="h-screen flex items-center justify-center text-zinc-500">No videos in ${currentTab}. Upload one!</div>`; return; }
+ fd.innerHTML=list.map(v=>`
+ <div class="h-screen w-screen snap-start relative bg-zinc-900 flex items-center justify-center overflow-hidden">
+   <video src="${v.url}" loop playsinline class="h-full w-full max-w-[400px] object-cover" onclick="this.paused?this.play():this.pause()"></video>
+   <div class="absolute bottom-20 left-3 right-16">
+     <p class="font-bold">@${v.owner}</p>
+     <p class="text-sm mt-1">${v.caption}</p>
+   </div>
+   <div class="absolute bottom-20 right-2 flex flex-col gap-5 items-center">
+     <button onclick="likeVid(${v.id})" class="flex flex-col items-center"><div class="w-12 h-12 bg-zinc-800/60 rounded-full flex items-center justify-center"><i class="fa-solid fa-heart ${v.liked?'text-red-500':'text-white'} text-xl"></i></div><span class="text-xs mt-1">${v.likes}</span></button>
+     <button onclick="toggleFollow(${v.id})" class="flex flex-col items-center"><div class="w-12 h-12 bg-zinc-800/60 rounded-full flex items-center justify-center"><i class="fa-solid fa-user-plus text-xl"></i></div><span class="text-[10px]">${v.isFollowing?'Following':'Follow'}</span></button>
+     <button class="flex flex-col items-center"><div class="w-12 h-12 bg-zinc-800/60 rounded-full flex items-center justify-center"><i class="fa-solid fa-share text-xl"></i></div><span class="text-xs">Share</span></button>
+   </div>
+ </div>
+ `).join('');
+ // Auto play first video
+ setTimeout(()=>{let first=fd.querySelector('video'); if(first) first.play().catch(()=>{});},500);
 }
-function likeVid(id,btn){let v=DB.videos.find(x=>x.id==id);v.liked=!v.liked;v.likes+=v.liked?1:-1;save();btn.querySelector('span').innerText=fmt(v.likes);let i=btn.querySelector('i');if(v.liked)i.classList.add('text-[#FE2C55]');else i.classList.remove('text-[#FE2C55]');}
-function openCreate(){document.getElementById('createPage').classList.remove('hidden');document.getElementById('createPage').classList.add('flex');}
-function openStudio(){document.getElementById('studioPage').classList.remove('hidden');}
-function openOwner(){document.getElementById('ownerPage').classList.remove('hidden');}
-function openProfile(){document.getElementById('profilePage').classList.remove('hidden');}
-function openSearch(){document.getElementById('searchPage').classList.remove('hidden');}
-function openInbox(){document.getElementById('inboxPage').classList.remove('hidden');}
-function closeAll(){document.querySelectorAll('#createPage,#studioPage,#ownerPage,#profilePage,#searchPage,#inboxPage,#commentsPage').forEach(e=>{e.classList.add('hidden');e.classList.remove('flex');});}
-function closeComments(){let e=document.getElementById('commentsPage');e.classList.add('hidden');e.classList.remove('flex');}
-function openComments(id){curVid=id;let e=document.getElementById('commentsPage');e.classList.remove('hidden');e.classList.add('flex');renderC(id);}
-function renderC(id){let list=DB.comments[id]||[{user:'sarah',avatar:'https://i.pravatar.cc/100?img=26',text:'V50 is exactly like TikTok! 🔥',likes:12,time:'2h'}];document.getElementById('commentCount').innerText=list.length+' comments';document.getElementById('commentsList').innerHTML=list.map(c=>`<div class="flex gap-2"><img src="${c.avatar}" class="w-8 h-8 rounded-full"><div><b class="text-[13px]">@${c.user}</b> <span class="text-[10px] opacity-40">${c.time}</span><p class="text-[13px]">${c.text}</p></div></div>`).join('');}
-function postComment(){let inp=document.getElementById('commentInput');if(!inp.value.trim())return;if(!DB.comments[curVid])DB.comments[curVid]=[];DB.comments[curVid].unshift({user:(ME&&ME.handle)||'you',avatar:(ME&&ME.avatar)||'https://i.pravatar.cc/100?img=5',text:inp.value,likes:0,time:'now'});let v=DB.videos.find(x=>x.id==curVid);if(v)v.comments++;DB.earnings+=5;DB.ownerEarnings+=2;save();inp.value='';renderC(curVid);init();toast('Comment posted - anyone with link can comment like TikTok');}
-function handleFile(inp){let f=inp.files[0];if(!f)return;upUrl=URL.createObjectURL(f);document.getElementById('upIcon').classList.add('hidden');document.getElementById('upText').classList.add('hidden');if(f.type.startsWith('video')){let v=document.getElementById('prevVid');v.src=upUrl;v.classList.remove('hidden');}else{let im=document.getElementById('prevImg');im.src=upUrl;im.classList.remove('hidden');}toast('From gallery selected! Add caption & Post');}
-function postVideo(){let cap=document.getElementById('capIn').value||'My V50 video #fyp';if(!upUrl){toast('Tap box first - select video/photo from gallery');return;}let id='v'+Date.now();let h=(ME&&ME.handle)||'you';let av=(ME&&ME.avatar)||'https://i.pravatar.cc/100?img=5';DB.videos.unshift({id:id,user:h,handle:h,avatar:av,likes:0,comments:0,shares:0,caption:cap,music:'Original - '+h,img:upUrl,time:'now'});DB.earnings+=50;DB.ownerEarnings+=20;save();closeAll();init();toast('Posted! Link?u='+h+'&v='+id);}
-function createAcc(){let n=document.getElementById('obName').value.trim();let h=document.getElementById('obHandle').value.trim().replace('@','');let e=document.getElementById('obEmail').value.trim();if(!n||!h){toast('Enter name & handle');return;}ME={name:n,handle:h,email:e,avatar:'https://i.pravatar.cc/200?img='+Math.floor(Math.random()*70)};saveMe();document.getElementById('onboard').classList.add('hidden');document.getElementById('pName').innerText=n;document.getElementById('pHandle').innerText='@'+h;document.getElementById('myAv').src=ME.avatar;init();toast('Welcome @'+h+'! Your page created');}
-function skip(){document.getElementById('onboard').classList.add('hidden');init();}
-function giftCreator(u){DB.earnings+=70;DB.ownerEarnings+=30;DB.tx.unshift({type:'Gift',user:u,creator:70,owner:30,time:'now'});save();init();toast('Gift ₦100! ₦70 to @'+u+' + ₦30 to you Owner');updTx();}
-function paystackPayout(){toast('Paystack payout ₦'+DB.earnings+' - add live key pk_live_ for real');}
-function shareLink(id){let h=(ME&&ME.handle)||DB.videos.find(x=>x.id==id)?.handle||'you';let url=location.origin+location.pathname+'?u='+h+'&v='+id;if(navigator.share){navigator.share({title:'PizTok',url:url});}else{prompt('Copy link - anyone fit comment like TikTok:',url);}}
-function renderP(){let g=document.getElementById('pGrid');if(!g)return;g.innerHTML=DB.videos.map(v=>`<div class="aspect-[3/4] bg-black"><img src="${v.img}" class="w-full h-full object-cover"></div>`).join('');}
-function renderStudio(){let l=document.getElementById('studioList');if(!l)return;l.innerHTML=DB.videos.slice(0,5).map(v=>`<div class="flex gap-3 bg-black/40 p-2 rounded-xl"><img src="${v.img}" class="w-12 h-12 rounded-lg object-cover"><div><p class="text-[12px] font-bold truncate">${v.caption}</p><p class="text-[10px] opacity-40">${fmt(v.likes)} likes</p></div></div>`).join('');}
-function renderInbox(){let b=document.getElementById('inboxList');if(!b)return;b.innerHTML=DB.tx.slice(0,10).map(t=>`<div class="bg-[#151515] p-3 rounded-xl flex justify-between"><span class="text-[13px]">${t.type} @${t.user}</span><span class="text-[11px] text-green-400">+₦${t.creator}/+₦${t.owner}</span></div>`).join('')||'<p class="text-white/40 text-[13px]">No activity yet</p>';}
-function updTx(){let e=document.getElementById('txList');if(!e)return;e.innerHTML=DB.tx.slice(0,8).map(t=>`<div class="flex justify-between bg-black/40 p-2 rounded-lg"><span>${t.type} @${t.user}</span><span class="text-green-400">C ₦${t.creator} / O ₦${t.owner}</span></div>`).join('')||'<p class="opacity-30">No tx yet</p>';}
-function doSearch(q){let r=DB.videos.filter(v=>v.caption.toLowerCase().includes(q.toLowerCase()));document.getElementById('searchResults').innerHTML=r.map(v=>`<div class="bg-[#151515] p-3 rounded-xl mb-2 flex gap-2"><img src="${v.img}" class="w-12 h-12 rounded-lg object-cover"><div><p class="font-bold text-[13px]">@${v.handle}</p><p class="text-[12px] opacity-60">${v.caption}</p></div></div>`).join('')||'<p class="opacity-30 text-[13px]">Try viral</p>';}
-if(ME){document.getElementById('onboard').classList.add('hidden');document.getElementById('pName').innerText=ME.name;document.getElementById('pHandle').innerText='@'+ME.handle;document.getElementById('myAv').src=ME.function renderP(){let g=document.getElementById('pGrid');if(!g)return;g.innerHTML='';DB.videos.forEach(v=>{let u=v.url||v.videoUrl||'';if(!u)return;g.innerHTML+=`<div style="aspect-ratio:9/16;background:#18181b;border-radius:8px;overflow:hidden"><video src="${u}" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover" onloadeddata="try{this.currentTime=0.2}catch(e){}"></video></di>
-function renderP(){let g=document.getElementById('pGrid');if(!g)return;g.innerHTML='';DB.videos.forEach(v=>{let u=v.url||v.videoUrl||'';if(!u)return;g.innerHTML+=`<div style="aspect-ratio:9/16;background:#18181b;border-radius:8px;overflow:hidden"><video src="${u}" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover" onloadeddata="try{this.currentTime=0.2}catch(e){}"></video></div>`})};
+
+function renderP(){
+ let g=document.getElementById('pGrid');
+ let no=document.getElementById('noVid');
+ let count=document.getElementById('vidCount');
+ if(!g)return;
+ let myVids = DB.videos.filter(v=>v.owner===ME.handle);
+ if(count) count.textContent = myVids.length + ' videos';
+ if(myVids.length===0){ g.innerHTML=''; if(no) no.classList.remove('hidden'); return; }
+ if(no) no.classList.add('hidden');
+ // THIS IS THE FIX - REAL VIDEO NOT BLACK DIV
+ g.innerHTML = myVids.map(v=>`
+   <div class="aspect-[9/16] bg-zinc-900 overflow-hidden relative group cursor-pointer">
+     <video src="${v.url}" muted playsinline preload="metadata" class="w-full h-full object-cover" onloadeddata="try{this.currentTime=0.2}catch(e){}" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0.2"></video>
+     <div class="absolute bottom-1 left-1 text-[10px] flex items-center gap-1"><i class="fa-solid fa-play"></i> ${v.likes}</div>
+   </div>
+ `).join('');
+}
+
+function likeVid(id){
+ let v=DB.videos.find(x=>x.id===id); if(!v)return;
+ v.liked=!v.liked; v.likes+= v.liked?1:-1; save(); renderFeed(); renderP();
+}
+function toggleFollow(id){
+ let v=DB.videos.find(x=>x.id===id); if(!v)return;
+ v.isFollowing=!v.isFollowing; save(); renderFeed();
+}
+function switchTab(t){
+ currentTab=t;
+ document.getElementById('tabForYou').className = t==='foryou'? 'font-bold text-white border-b-2 border-white pb-1' : 'font-bold text-zinc-400';
+ document.getElementById('tabFollowing').className = t==='following'? 'font-bold text-white border-b-2 border-white pb-1' : 'font-bold text-zinc-400';
+ renderFeed();
+}
+function showPage(p){
+ if(p==='feed'){ document.getElementById('feed').classList.remove('hidden'); document.getElementById('profilePage').classList.add('hidden'); renderFeed(); }
+ else{ document.getElementById('feed').classList.add('hidden'); document.getElementById('profilePage').classList.remove('hidden'); renderP(); }
+}
+
+renderAll();
+</script>
+</body>
+  </html>
