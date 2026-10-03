@@ -1,6 +1,6 @@
 <!DOCTYPE html><html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PizTok V401 - JOINED V400 + Auto</title>
+<title>PizTok V400 - Profile + Save + DoubleTap</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
@@ -19,41 +19,36 @@
 .heartAnim{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:90px;color:#fe2c55;pointer-events:none;z-index:20;transition:.4s}
 .heartAnim.show{transform:translate(-50%,-50%) scale(1.2);opacity:0;animation:pop.8s ease}
 @keyframes pop{0%{transform:translate(-50%,-50%) scale(0)}15%{transform:translate(-50%,-50%) scale(1.2)}30%{transform:translate(-50%,-50%) scale(.95)}45%,80%{transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
-.hide-scroll::-webkit-scrollbar{display:none}
 </style></head><body>
 
 <div class="top" id="topTabs"><b style="border-bottom:2px solid #fff">For You</b><b style="color:#888">Following</b><b onclick="openStudio()" style="background:#fe2c55;padding:3px 10px;border-radius:4px;font-size:11px">+ STUDIO</b></div>
 
 <div id="p-home" class="page active"><div id="feed" class="feed"></div></div>
 
-<!-- PROFILE PAGE - JOINED: Now Followers / Following / Likes ONLY (video comot but old code still dey for grid) -->
-<div id="p-profile" class="page" style="display:none;padding-top:10px;align-items:center">
+<!-- PROFILE PAGE WITH SETTINGS -->
+<div id="p-profile" class="page active" style="display:none;padding-top:10px;align-items:center">
 <div style="width:100%;display:flex;justify-content:space-between;padding:15px 20px"><h2 style="font-size:20px;font-weight:bold">Profile</h2><div style="display:flex;gap:15px"><i class="fa-solid fa-bookmark" onclick="showSaved()" style="font-size:20px"></i><i class="fa-solid fa-gear" onclick="openSettings()" style="font-size:20px"></i></div></div>
-<img id="pAvatar" src="https://i.pravatar.cc/150?u=you" style="width:90px;height:90px;border-radius:50%;border:3px solid #fff;margin-top:5px" class="profile-pic" data-userid="you">
+<img id="pAvatar" src="https://i.pravatar.cc/150?u=you" style="width:90px;height:90px;border-radius:50%;border:3px solid #fff;margin-top:5px">
 <h2 id="pName" style="margin-top:12px;font-size:20px;font-weight:bold">@you</h2>
 <p id="pBio" style="color:#aaa;font-size:13px;text-align:center;padding:0 30px;margin-top:6px">Digital creator | Nigeria 🇳🇬</p>
 <p id="pLink" style="color:#25f4ee;font-size:13px;margin-top:6px">piztok.com/you</p>
-<!-- JOINED CHANGE: Followers / Following / Likes - NO VIDEOS COUNT -->
-<div style="display:flex;gap:30px;margin-top:18px"><div style="text-align:center"><b id="followersCount">1.2K</b><br><span style="color:#888;font-size:12px">Followers</span></div><div style="text-align:center"><b id="followingCount">150</b><br><span style="color:#888;font-size:12px">Following</span></div><div style="text-align:center"><b id="likesCount">0</b><br><span style="color:#888;font-size:12px">Likes</span></div></div>
+<div style="display:flex;gap:30px;margin-top:18px"><div style="text-align:center"><b id="vCount">0</b><br><span style="color:#888;font-size:12px">Videos</span></div><div style="text-align:center"><b>1.2K</b><br><span style="color:#888;font-size:12px">Followers</span></div><div style="text-align:center"><b>150</b><br><span style="color:#888;font-size:12px">Following</span></div></div>
 <div style="display:flex;gap:10px;margin-top:18px"><button onclick="openEdit()" style="border:1px solid #333;padding:8px 24px;border-radius:4px;font-weight:bold">Edit profile</button><button onclick="showSaved()" style="border:1px solid #333;padding:8px 12px;border-radius:4px"><i class="fa-regular fa-bookmark"></i> Saved</button></div>
 <div style="display:flex;gap:20px;margin-top:20px;width:100%;justify-content:center;border-top:1px solid #111;padding-top:10px"><span style="border-bottom:2px solid #fff;padding-bottom:6px"><i class="fa-solid fa-table-cells"></i></span><span style="color:#555"><i class="fa-solid fa-heart"></i></span><span style="color:#555"><i class="fa-solid fa-bookmark"></i></span></div>
 <div id="myGrid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;width:100%;margin-top:2px"></div>
 </div>
 
-<!-- JOINED NEW: OTHER USER PROFILE -->
-<div id="otherProfile" class="modal" style="z-index:150"><div style="flex:1;background:#000;overflow-y:auto"><div style="display:flex;justify-content:space-between;padding:15px"><button onclick="document.getElementById('otherProfile').classList.remove('show')" style="width:36px;height:36px;background:#222;border-radius:50%"><i class="fa-solid fa-arrow-left"></i></button><i class="fa-solid fa-ellipsis"></i></div><div style="text-align:center"><img id="oAvatar" src="" style="width:90px;height:90px;border-radius:50%;border:3px solid #fff;margin:auto"><h2 id="oName" style="margin-top:12px;font-size:20px;font-weight:bold"></h2><p style="color:#aaa;font-size:13px">PizTok Creator 🔥</p><div style="display:flex;gap:30px;margin-top:18px;justify-content:center"><div style="text-align:center"><b>3.4K</b><br><span style="color:#888;font-size:12px">Followers</span></div><div style="text-align:center"><b>210</b><br><span style="color:#888;font-size:12px">Following</span></div><div style="text-align:center"><b>12.5K</b><br><span style="color:#888;font-size:12px">Likes</span></div></div><div style="display:flex;gap:10px;margin-top:18px;justify-content:center;padding:0 20px"><button id="followBtn" onclick="toggleFollow()" style="flex:1;background:#fe2c55;padding:10px;border-radius:6px;font-weight:bold">Follow</button><button style="background:#222;padding:10px 16px;border-radius:6px"><i class="fa-solid fa-paper-plane"></i></button></div><div id="oGrid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;width:100%;margin-top:20px"></div></div></div></div>
-
-<!-- STUDIO - JOINED with Sounds label -->
+<!-- STUDIO -->
 <div id="studio" class="modal">
 <div style="flex:1;position:relative;background:#111;display:flex;justify-content:center">
 <video id="camPreview" autoplay muted playsinline style="height:100%;width:100%;max-width:430px;object-fit:cover;display:none"></video>
 <video id="previewUpload" loop playsinline style="height:100%;width:100%;max-width:430px;object-fit:cover;display:none"></video>
-<div id="studioIdle" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%"><i class="fa-solid fa-video" style="font-size:50px;color:#333"></i><p style="margin-top:10px;color:#888">PizTok Studio</p><p id="selectedSoundLabel" style="color:#25f4ee;font-size:12px;margin-top:8px"></p></div>
-<div style="position:absolute;top:15px;left:15px;right:15px;display:flex;justify-content:space-between"><button onclick="closeStudio()" style="width:36px;height:36px;background:rgba(0,0,0,.5);border-radius:50%"><i class="fa-solid fa-xmark"></i></button><div style="display:flex;gap:8px"><span onclick="openSoundLib()" style="background:rgba(0,0,0,.6);padding:6px 12px;border-radius:20px;font-size:11px;border:1px solid #25f4ee"><i class="fa-solid fa-music"></i> Sounds</span><span style="background:rgba(0,0,0,.5);padding:6px 12px;border-radius:20px;font-size:11px">Effects</span></div></div>
-<div style="position:absolute;bottom:20px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:12px"><div style="display:flex;align-items:center;gap:30px"><button onclick="triggerGallery()" style="width:42px;height:42px;border-radius:8px;border:2px solid #fff"><i class="fa-solid fa-images"></i></button><button onclick="toggleRec()" style="width:78px;height:78px;border-radius:50%;border:4px solid #fff;background:#fe2c55"><div style="width:30px;height:30px;background:#fff;border-radius:4px;margin:auto" id="recInner"></div></button><button style="width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.2)"><i class="fa-solid fa-face-smile"></i></button></div><button id="uploadBtn" onclick="postVideo()" style="display:none;background:#fe2c55;padding:12px 40px;border-radius:8px;font-weight:bold;width:90%;max-width:300px">Next → Post</button><input id="captionInput" placeholder="Add caption #hashtags" style="display:none;background:#1a1a1a;border:none;padding:12px;border-radius:8px;width:90%;max-width:400px;color:#fff"></div>
+<div id="studioIdle" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%"><i class="fa-solid fa-video" style="font-size:50px;color:#333"></i><p style="margin-top:10px;color:#888">PizTok Studio</p></div>
+<div style="position:absolute;top:15px;left:15px;right:15px;display:flex;justify-content:space-between"><button onclick="closeStudio()" style="width:36px;height:36px;background:rgba(0,0,0,.5);border-radius:50%"><i class="fa-solid fa-xmark"></i></button><div style="display:flex;gap:8px"><span style="background:rgba(0,0,0,.5);padding:6px 12px;border-radius:20px;font-size:11px"><i class="fa-solid fa-music"></i> Sounds</span><span style="background:rgba(0,0,0,.5);padding:6px 12px;border-radius:20px;font-size:11px">Effects</span></div></div>
+<div style="position:absolute;bottom:20px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:12px"><div style="display:flex;align-items:center;gap:30px"><button onclick="document.getElementById('galleryInput').click()" style="width:42px;height:42px;border-radius:8px;border:2px solid #fff"><i class="fa-solid fa-images"></i></button><button onclick="toggleRec()" style="width:78px;height:78px;border-radius:50%;border:4px solid #fff;background:#fe2c55"><div style="width:30px;height:30px;background:#fff;border-radius:4px;margin:auto" id="recInner"></div></button><button style="width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.2)"><i class="fa-solid fa-face-smile"></i></button></div><button id="uploadBtn" onclick="postVideo()" style="display:none;background:#fe2c55;padding:12px 40px;border-radius:8px;font-weight:bold;width:90%;max-width:300px">Next → Post</button><input id="captionInput" placeholder="Add caption #hashtags" style="display:none;background:#1a1a1a;border:none;padding:12px;border-radius:8px;width:90%;max-width:400px;color:#fff"></div>
 </div></div>
 
-<!-- EDIT PROFILE -->
+<!-- EDIT PROFILE WITH PICTURE UPLOAD -->
 <div id="editModal" class="modal"><div class="sheet">
 <h3 style="font-weight:bold">Edit profile</h3>
 <div style="display:flex;flex-direction:column;align-items:center;margin-top:15px">
@@ -68,40 +63,32 @@
 <button onclick="document.getElementById('editModal').classList.remove('show')" style="width:100%;padding:10px;margin-top:8px;color:#888">Cancel</button>
 </div></div>
 
-<!-- SETTINGS -->
+<!-- SETTINGS MODAL -->
 <div id="settingsModal" class="modal"><div class="sheet">
 <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="font-weight:bold;font-size:18px">Settings and privacy</h3><i class="fa-solid fa-xmark" onclick="document.getElementById('settingsModal').classList.remove('show')"></i></div>
 <div style="margin-top:20px">
 <div style="padding:14px 0;border-bottom:1px solid #222;display:flex;justify-content:space-between"><span><i class="fa-solid fa-user"></i> Account</span><i class="fa-solid fa-chevron-right" style="color:#555"></i></div>
 <div style="padding:14px 0;border-bottom:1px solid #222;display:flex;justify-content:space-between"><span><i class="fa-solid fa-lock"></i> Privacy</span><i class="fa-solid fa-chevron-right" style="color:#555"></i></div>
 <div style="padding:14px 0;border-bottom:1px solid #222;display:flex;justify-content:space-between"><span><i class="fa-solid fa-bell"></i> Notifications</span><span style="color:#888">On</span></div>
-<div style="padding:14px 0;border-bottom:1px solid #222;display:flex;justify-content:space-between" onclick="if(confirm('Clear all?')){localStorage.clear();location.reload();}"><span><i class="fa-solid fa-trash"></i> Clear cache</span><i class="fa-solid fa-chevron-right" style="color:#555"></i></div>
-<div style="padding:14px 0;border-bottom:1px solid #222;display:flex;justify-content:space-between"><span><i class="fa-solid fa-circle-info"></i> About PizTok V401 JOINED</span><span style="color:#888">v4.0.1</span></div>
+<div style="padding:14px 0;border-bottom:1px solid #222;display:flex;justify-content:space-between"><span><i class="fa-solid fa-language"></i> Language</span><span style="color:#888">English</span></div>
+<div style="padding:14px 0;border-bottom:1px solid #222;display:flex;justify-content:space-between"><span><i class="fa-solid fa-moon"></i> Dark mode</span><span style="color:#25f4ee">On</span></div>
+<div style="padding:14px 0;border-bottom:1px solid #222;display:flex;justify-content:space-between" onclick="if(confirm('Clear all videos & cache?')){localStorage.clear();location.reload();}"><span><i class="fa-solid fa-trash"></i> Clear cache</span><i class="fa-solid fa-chevron-right" style="color:#555"></i></div>
+<div style="padding:14px 0;border-bottom:1px solid #222;display:flex;justify-content:space-between"><span><i class="fa-solid fa-circle-info"></i> About PizTok V400</span><span style="color:#888">v4.0</span></div>
 <button onclick="alert('Logged out - Demo')" style="width:100%;border:1px solid #fe2c55;color:#fe2c55;padding:12px;border-radius:8px;margin-top:20px">Log out</button>
 </div>
 </div></div>
 
+<!-- SAVED VIDEOS MODAL -->
 <div id="savedModal" class="modal"><div class="sheet" style="max-height:90vh">
 <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="font-weight:bold"><i class="fa-solid fa-bookmark"></i> Saved videos</h3><i class="fa-solid fa-xmark" onclick="document.getElementById('savedModal').classList.remove('show')"></i></div>
 <div id="savedList" style="margin-top:15px"></div>
 </div></div>
 
-<!-- JOINED NEW MODALS - No delete, only JOIN -->
-<div id="soundModal" class="modal" style="z-index:210"><div class="sheet" style="max-height:95vh">
-<div style="display:flex;justify-content:space-between"><h3 style="font-weight:bold">🎵 Sounds Library</h3><i class="fa-solid fa-xmark" onclick="document.getElementById('soundModal').classList.remove('show')"></i></div>
-<input id="soundSearch" oninput="filterSounds(this.value)" placeholder="Search sounds, lyrics..." style="width:100%;background:#2a2a2a;border:none;padding:12px;border-radius:10px;margin-top:15px;color:#fff">
-<div id="soundsList" style="margin-top:15px;display:flex;flex-direction:column;gap:10px;max-height:60vh;overflow-y:auto" class="hide-scroll"></div>
-</div></div>
-
-<div id="permModal" class="modal" style="z-index:300;background:rgba(0,0,0,.85);justify-content:center;align-items:center;display:none"><div style="background:#fff;color:#000;border-radius:20px;padding:24px;max-width:320px;width:90%;text-align:center"><div style="font-size:50px">📁</div><h3 style="font-weight:bold;font-size:18px;margin-top:10px">Allow PizTok to access files?</h3><p style="font-size:13px;color:#666;margin-top:8px">Like TikTok, we need permission to upload videos & sounds. One time only.</p><div style="display:flex;gap:12px;margin-top:20px"><button onclick="denyPerm()" style="flex:1;background:#eee;padding:12px;border-radius:10px;font-weight:bold">Deny</button><button onclick="grantPerm()" style="flex:1;background:#000;color:#fff;padding:12px;border-radius:10px;font-weight:bold">Allow</button></div></div></div>
-
-<div id="commentModal" class="modal" style="justify-content:flex-end"><div class="sheet" style="max-height:75vh"><div style="display:flex;justify-content:space-between"><h3 style="font-weight:bold"><span id="cCount">0</span> comments</h3><i class="fa-solid fa-xmark" onclick="document.getElementById('commentModal').classList.remove('show')"></i></div><div id="cList" style="margin-top:15px;max-height:45vh;overflow-y:auto" class="hide-scroll"></div><div style="display:flex;gap:8px;margin-top:15px;border-top:1px solid #222;padding-top:12px"><img src="https://i.pravatar.cc/50?u=you" style="width:32px;height:32px;border-radius:50%"><input id="cInput" placeholder="Add comment..." style="flex:1;background:#2a2a2a;border:none;padding:10px 14px;border-radius:20px;color:#fff;font-size:13px"><button onclick="postComment()" style="color:#fe2c55;font-weight:bold">Post</button></div></div></div>
-
 <div class="nav">
 <div onclick="showHome()"><i class="fa-solid fa-house"></i><br><span style="font-size:9px">Home</span></div>
 <div><i class="fa-solid fa-magnifying-glass"></i><br><span style="font-size:9px">Search</span></div>
 <div onclick="openStudio()" style="background:#fff;color:#000;padding:8px 18px;border-radius:8px"><i class="fa-solid fa-plus"></i></div>
-<div onclick="openSoundLib()"><i class="fa-solid fa-music"></i><br><span style="font-size:9px">Sounds</span></div>
+<div><i class="fa-solid fa-inbox"></i><br><span style="font-size:9px">Inbox</span></div>
 <div onclick="showProfile()" style="border-bottom:2px solid #fff"><i class="fa-regular fa-user"></i><br><span style="font-size:9px">You</span></div>
 </div>
 
@@ -109,27 +96,85 @@
 
 <script>
 let DB=JSON.parse(localStorage.getItem('piz400')||'null');
-if(!DB){DB={videos:[{id:1,url:"https://www.w3schools.com/html/mov_bbb.mp4",owner:"piztok_official",cap:"V401 JOINED! Same V400 + Auto features! #fyp",likes:999,liked:false,sound:"Original"}],user:{name:"you",bio:"Digital creator | Nigeria 🇳🇬",link:"piztok.com/you",avatar:"https://i.pravatar.cc/150?u=you"},saved:[],comments:{}};localStorage.setItem('piz400',JSON.stringify(DB));}
-function save(){localStorage.setItem('piz400',JSON.stringify(DB)); updateStats();}
+if(!DB){DB={videos:[{id:1,url:"https://www.w3schools.com/html/mov_bbb.mp4",owner:"piztok_official",cap:"V400! Now double tap to like ❤️ + Change profile pic + Settings + Save videos! Try am now! #fyp",likes:999,liked:false}],user:{name:"you",bio:"Digital creator | Nigeria 🇳🇬",link:"piztok.com/you",avatar:"https://i.pravatar.cc/150?u=you"},saved:[]};localStorage.setItem('piz400',JSON.stringify(DB));}
+function save(){localStorage.setItem('piz400',JSON.stringify(DB));}
 let feed=document.getElementById('feed');
-let lastTap=0, currentVideoId=null, selectedSound=null;
-const sounds=[{name:"Asake - Lonely At The Top",uses:"2.3M",lyric:"Lonely at the top"}, {name:"Ayra Starr - Rush",uses:"1.8M",lyric:"E dey rush"}, {name:"Rema - Calm Down",uses:"5.1M",lyric:"Baby calm down"}, {name:"Burna Boy - Last Last",uses:"3.2M",lyric:"E don cast"}, {name:"Kizz Daniel - Buga",uses:"4M",lyric:"Buga won"}, {name:"Libianca - People",uses:"1.1M",lyric:"I've been drinking"}, {name:"Victony - Soweto",uses:"900K",lyric:"Soweto"}, {name:"Tiwa - Somebody Son",uses:"700K",lyric:"Somebody son"}];
-
-function renderSounds(list){document.getElementById('soundsList').innerHTML=list.map(s=>`<div onclick="selectSound('${s.name}')" style="background:#222;padding:12px;border-radius:10px;display:flex;justify-content:space-between"><div><b style="font-size:13px">🎧 ${s.name}</b><p style="font-size:11px;color:#888">${s.uses} • ${s.lyric}</p></div><span style="background:#fff;color:#000;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:bold">Use</span></div>`).join('');}
-function filterSounds(q){renderSounds(sounds.filter(s=>s.name.toLowerCase().includes(q.toLowerCase())||s.lyric.toLowerCase().includes(q.toLowerCase())));}
-function openSoundLib(){renderSounds(sounds); document.getElementById('soundModal').classList.add('show');}
-function selectSound(n){selectedSound=n; document.getElementById('selectedSoundLabel').innerText='🎵 '+n+' selected'; document.getElementById('soundModal').classList.remove('show'); if(navigator.vibrate) navigator.vibrate(50);}
-function triggerGallery(){if(!localStorage.getItem('piztok_perm')){document.getElementById('permModal').style.display='flex'; document.getElementById('permModal').classList.add('show'); return;} document.getElementById('galleryInput').click();}
-function grantPerm(){localStorage.setItem('piztok_perm','true'); document.getElementById('permModal').style.display='none'; document.getElementById('permModal').classList.remove('show'); document.getElementById('galleryInput').click(); if(navigator.vibrate) navigator.vibrate(50);}
-function denyPerm(){document.getElementById('permModal').style.display='none'; document.getElementById('permModal').classList.remove('show');}
-
+let lastTap=0;
 function render(){
 feed.innerHTML=DB.videos.map((v,i)=>`
 <div class="item" ondblclick="likeDouble(${i})">
 <video src="${v.url}" loop playsinline onclick="handleTap(${i})" id="vid${i}"></video>
 <div class="heartAnim" id="heart${i}"><i class="fa-solid fa-heart"></i></div>
-<div class="info"><b class="profile-pic" data-userid="${v.owner}" onclick="openOtherProfile('${v.owner}')" style="cursor:pointer">@${v.owner}</b><p style="font-size:14px;margin-top:5px">${v.cap}</p><p style="font-size:11px;color:#25f4ee;margin-top:3px">🎵 ${v.sound||'Original'}</p></div>
+<div class="info"><b>@${v.owner}</b><p style="font-size:14px;margin-top:5px">${v.cap}</p></div>
 <div class="right">
-<img src="${v.owner=='you'?DB.user.avatar:'https://i.pravatar.cc/100?u='+v.owner}" style="width:50px;height:50px;border-radius:50%;border:2px solid #fff" class="profile-pic" data-userid="${v.owner}" onclick="openOtherProfile('${v.owner}')">
+<img src="${DB.user.avatar}" style="width:50px;height:50px;border-radius:50%;border:2px solid #fff;display:${v.owner=='you'?'block':'none'}">
+<img src="https://i.pravatar.cc/100?u=${v.owner}" style="width:50px;height:50px;border-radius:50%;border:2px solid #fff;display:${v.owner!='you'?'block':'none'}">
 <div class="rbtn" id="likeBtn${i}" onclick="likeVideo(${i})" style="color:${v.liked?'#fe2c55':'#fff'}"><span style="font-size:28px">${v.liked?'❤️':'🤍'}</span><br><span style="font-size:11px">${v.likes}</span></div>
-<div class="rbtn" onclick="openComments(${v.id})"><i class="fa-solid fa-comment-dots" s
+<div class="rbtn" onclick="alert('Comments - 12 comments')"><i class="fa-solid fa-comment-dots" style="font-size:26px"></i><br><span style="font-size:11px">12</span></div>
+<div class="rbtn" onclick="saveVideo(${i})" style="color:${DB.saved.includes(v.id)?'#ffcc00':'#fff'}"><i class="fa-${DB.saved.includes(v.id)?'solid':'regular'} fa-bookmark" style="font-size:24px"></i><br><span style="font-size:9px">${DB.saved.includes(v.id)?'Saved':'Save'}</span></div>
+<div class="rbtn" onclick="shareVideo(${i})"><i class="fa-solid fa-share" style="font-size:22px"></i><br><span style="font-size:9px">Share</span></div>
+</div>
+</div>`).join('');
+let f=feed.querySelector('video'); if(f){f.muted=true; f.play().catch(()=>{});}
+document.getElementById('vCount').innerText=DB.videos.filter(v=>v.owner=='you').length;
+document.getElementById('pAvatar').src=DB.user.avatar;
+document.getElementById('editAvatarPreview').src=DB.user.avatar;
+document.getElementById('pName').innerText='@'+DB.user.name;
+document.getElementById('pBio').innerText=DB.user.bio;
+document.getElementById('pLink').innerText=DB.user.link;
+let grid=document.getElementById('myGrid'); grid.innerHTML=DB.videos.filter(v=>v.owner=='you').map(v=>`<video src="${v.url}" style="aspect-ratio:3/4;object-fit:cover;width:100%"></video>`).join('');
+}
+function handleTap(i){
+let now=Date.now(); if(now-lastTap<300){likeDouble(i);} lastTap=now;
+}
+function likeDouble(i){
+let v=DB.videos[i]; if(!v.liked){v.liked=true; v.likes++; save();}
+let h=document.getElementById('heart'+i); h.classList.add('show'); setTimeout(()=>h.classList.remove('show'),800);
+render();
+}
+function likeVideo(i){likeDouble(i);}
+function saveVideo(i){
+let id=DB.videos[i].id;
+if(DB.saved.includes(id)){DB.saved=DB.saved.filter(x=>x!=id); alert("Removed from saved");}
+else{DB.saved.push(id); alert("Saved! ✅ Check Profile > Saved");}
+save(); render();
+}
+function shareVideo(i){
+let url=location.href;
+if(navigator.share){navigator.share({title:'PizTok',text:DB.videos[i].cap,url:url});}
+else{navigator.clipboard.writeText(url); alert("Link copied! Share for WhatsApp:\n"+url);}
+}
+function showHome(){document.getElementById('p-profile').style.display='none';document.getElementById('p-home').classList.add('active');document.getElementById('topTabs').style.display='flex'; render();}
+function showProfile(){document.getElementById('p-home').classList.remove('active');document.getElementById('p-profile').style.display='flex';document.getElementById('topTabs').style.display='none';}
+function openEdit(){
+document.getElementById('eName').value=DB.user.name; document.getElementById('eBio').value=DB.user.bio; document.getElementById('eLink').value=DB.user.link;
+document.getElementById('editAvatarPreview').src=DB.user.avatar;
+document.getElementById('editModal').classList.add('show');
+}
+function saveProfile(){
+DB.user.name=document.getElementById('eName').value; DB.user.bio=document.getElementById('eBio').value; DB.user.link=document.getElementById('eLink').value;
+DB.user.avatar=document.getElementById('editAvatarPreview').src;
+save(); document.getElementById('editModal').classList.remove('show'); render(); alert("Profile updated with new picture! ✅");
+}
+document.getElementById('avatarInput').addEventListener('change',e=>{
+let f=e.target.files[0]; if(!f)return; let url=URL.createObjectURL(f);
+document.getElementById('editAvatarPreview').src=url;
+});
+function openSettings(){document.getElementById('settingsModal').classList.add('show');}
+function showSaved(){
+let list=document.getElementById('savedList');
+let savedVideos=DB.videos.filter(v=>DB.saved.includes(v.id));
+if(savedVideos.length==0){list.innerHTML="<p style='color:#888;text-align:center;padding:30px'>No saved videos yet. Tap Save icon on any video to save am.</p>";}
+else{list.innerHTML=savedVideos.map(v=>`<div style="display:flex;gap:10px;padding:10px;border-bottom:1px solid #222"><video src="${v.url}" style="width:70px;height:90px;object-fit:cover;border-radius:8px"></video><div><b>@${v.owner}</b><p style="font-size:12px;color:#aaa">${v.cap.slice(0,60)}</p><button onclick="saveVideo(${DB.videos.indexOf(v)});showSaved()" style="color:#fe2c55;font-size:11px;margin-top:5px">Unsave</button></div></div>`).join('');}
+document.getElementById('savedModal').classList.add('show');
+}
+let stream=null;
+function openStudio(){document.getElementById('studio').classList.add('show'); startCamera();}
+function closeStudio(){document.getElementById('studio').classList.remove('show'); stopCamera(); document.getElementById('camPreview').style.display='none'; document.getElementById('previewUpload').style.display='none'; document.getElementById('studioIdle').style.display='flex'; document.getElementById('uploadBtn').style.display='none'; document.getElementById('captionInput').style.display='none';}
+async function startCamera(){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:true}); let cam=document.getElementById('camPreview'); cam.srcObject=stream; cam.style.display='block'; document.getElementById('studioIdle').style.display='none';}catch(e){}}
+function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop()); stream=null;}}
+function toggleRec(){alert("Recording demo - Use gallery icon 📁 to upload video for now");}
+document.getElementById('galleryInput').addEventListener('change',e=>{let f=e.target.files[0]; if(!f)return; let url=URL.createObjectURL(f); window.uploadedUrl=url; stopCamera(); let p=document.getElementById('previewUpload'); p.src=url; p.style.display='block'; document.getElementById('camPreview').style.display='none'; document.getElementById('studioIdle').style.display='none'; document.getElementById('uploadBtn').style.display='block'; document.getElementById('captionInput').style.display='block';});
+function postVideo(){let cap=document.getElementById('captionInput').value||"My PizTok video 🔥 #fyp"; if(!window.uploadedUrl){alert("Select video first"); return;} DB.videos.unshift({id:Date.now(),url:window.uploadedUrl,owner:"you",cap:cap,likes:0,liked:false}); save(); closeStudio(); showHome(); render(); alert("Posted! ✅");}
+render();
+</script></body></html>
