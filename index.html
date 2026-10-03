@@ -166,3 +166,8 @@ feed.innerHTML=DB.videos.map((v,i)=>`
 <div class="right">
 <img src="${v.owner=='you'?DB.user.avatar:'https://i.pravatar.cc/100?u='+v.owner}" style="width:50px;height:50px;border-radius:50%;border:2px solid #fff" class="profile-pic" data-userid="${v.owner}" onclick="openOtherProfile('${v.owner}')">
 <div class="rbtn" id="likeBtn${i}" onclick="likeVideo(${i})" style="color:${v.liked?'#f
+/* FIX BLACK SCREEN BUG */
+#otherProfile{background:#000!important}
+#otherProfile.show{display:flex!important; z-index:9999!important}
+.item video{background:#111; min-height:100vh}
+#feed{background:#000}
