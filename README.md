@@ -55,3 +55,50 @@ body{background:#000;color:#fff;margin:0;font-family:sans-serif;overflow:hidden}
 <button class="w-full bg-zinc-900 p-4 rounded-xl">💰 Wallet Balance: $<span id="balance">0.00</span></button>
 <button class="w-full bg-zinc-900 p-4 rounded-xl">⭐ Monetization Request</button>
 <button class="w
+Skip to content
+wisdomeditztemplatecreator-max
+wisdom-piztok
+Repository navigation
+Code
+Issues
+Pull requests
+Agents
+Actions
+Projects
+Wiki
+Security and quality
+wisdom-piztok
+/README.md
+Go to file
+t
+T
+wisdomeditztemplatecreator-max
+wisdomeditztemplatecreator-max
+Initialize index with HTML template for PIZTOK
+02b368e
+ · 
+1 minute ago
+
+Preview
+
+Code
+
+Blame
+57 lines (57 loc) · 4.22 KB
+<title>PIZTOK - Fixed</title> <script src="https://cdn.tailwindcss.com"></script> <style> body{background:#000;color:#fff;margin:0;font-family:sans-serif;overflow:hidden} .video-feed{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory} .video-item{height:100vh;scroll-snap-align:start;position:relative;background:#111;display:flex;align-items:center;justify-content:center} .video-item video,.video-item img{width:100%;height:100%;object-fit:cover} .overlay{position:absolute;bottom:80px;left:10px;right:70px} .actions{position:absolute;right:10px;bottom:100px;display:flex;flex-direction:column;gap:20px;align-items:center} .action-btn{width:50px;height:50px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px} </style>
+PIZTOK
+Fixed - No Key Needed
+
+Login / Create
+
+Home
+Post
+Profile
+Create Post
+
+No FilterGrayscaleSepiaContrastBlur POST Close
+Back
+
+@user
+Edit Bio & Link 💼 Business Account 💰 Wallet Balance: $0.00 ⭐ Monetization Request
+ 
